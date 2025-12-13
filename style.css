@@ -543,7 +543,8 @@ body {
 .controls {
     position: absolute;
     bottom: 5rem;
-    right: var(--spacing-lg);
+    right: 25rem;
+    /* Shift controls to left of details panel */
 }
 
 .control-btn {
@@ -584,88 +585,74 @@ body {
 /* ========================================
    Node Popup
    ======================================== */
-.node-popup {
-    display: none;
+/* ========================================
+   Details Panel (Replaces Node Popup)
+   ======================================== */
+.details-panel {
     position: absolute;
-    min-width: 280px;
-    max-width: 320px;
-    z-index: 100;
+    bottom: 5rem;
+    right: 5rem;
+    /* Mirrors catalogue position */
+    width: 300px;
+    /* Fixed width */
+    max-width: 400px;
+    max-height: 60vh;
+    overflow-y: auto;
+    z-index: 20;
     pointer-events: auto;
+    display: none;
+    /* Hidden by default */
     border-left: 4px solid var(--color-accent);
+    /* Accent border */
 }
 
-.node-popup.active {
+.details-panel.active {
     display: block;
-    animation: popupFadeIn 0.3s ease;
+    animation: slideInRight 0.3s ease;
 }
 
-@keyframes popupFadeIn {
+@keyframes slideInRight {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateX(20px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(0);
     }
 }
 
-.popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--spacing-sm);
-    padding-bottom: var(--spacing-xs);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.popup-header h3 {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
-    margin: 0;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    color: var(--color-text-secondary);
-    font-size: 1.5rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0;
-    margin-left: var(--spacing-sm);
-    transition: color 0.2s;
-}
-
-.close-btn:hover {
-    color: var(--color-text-primary);
-}
-
-#popup-desc {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    margin-bottom: var(--spacing-md);
-    line-height: 1.5;
-}
-
-.popup-link {
+.popup-link.panel-link,
+.panel-link {
     display: inline-block;
-    color: var(--color-accent);
+    color: white;
     text-decoration: none;
     font-weight: 500;
     font-size: var(--font-size-sm);
     transition: all 0.2s;
-    background: rgba(99, 102, 241, 0.1);
+    background: var(--color-accent);
     padding: 0.5rem 1rem;
     border-radius: 6px;
+    margin-top: var(--spacing-sm);
+    text-align: center;
+    width: 100%;
+    /* Full width button */
 }
 
-.popup-link:hover {
-    color: white;
-    background: var(--color-accent);
+.panel-link:hover {
+    background: #4f46e5;
+    /* Darker accent */
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.placeholder-text {
+    color: var(--color-text-secondary);
+    font-style: italic;
+    font-size: var(--font-size-sm);
+    text-align: center;
+    padding: var(--spacing-md) 0;
 }
 
 .studio-details,
@@ -740,13 +727,22 @@ body {
         margin: var(--spacing-md) var(--spacing-lg);
     }
 
-    .controls {
+    .details-panel {
         position: relative;
         bottom: auto;
         right: auto;
-        margin: var(--spacing-md) var(--spacing-lg);
-        display: flex;
-        justify-content: center;
+        margin: 0 var(--spacing-md) var(--spacing-md);
+        display: none;
+        /* Hidden on mobile initially, or maybe stacked? User asked for easily navigable. Let's make it stack. */
+        /* Actually user said "box thats always in the right position". On mobile right position implies below graph or overlaid. */
+        /* Let's follow the stacking pattern */
+        width: auto;
+        left: auto;
+        min-width: 0;
+    }
+
+    .details-panel.active {
+        display: block;
     }
 
     .catalogue {

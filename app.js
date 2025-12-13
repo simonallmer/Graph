@@ -228,25 +228,29 @@ class Edge {
     }
 }
 
-class Popup {
+class DetailsPanel {
     constructor() {
-        this.element = document.getElementById('node-popup');
-        this.title = document.getElementById('popup-title');
-        this.desc = document.getElementById('popup-desc');
-        this.link = document.getElementById('popup-link');
-        this.closeBtn = document.getElementById('popup-close');
+        this.element = document.getElementById('details-panel');
+        this.title = document.getElementById('panel-title');
+        this.desc = document.getElementById('panel-desc'); // Currently placeholder text, will be replaced or hidden
+        this.content = document.getElementById('panel-dynamic-content');
+        this.link = document.getElementById('panel-link');
+        this.closeBtn = document.getElementById('panel-close');
 
         if (this.closeBtn) {
             this.closeBtn.addEventListener('click', () => this.hide());
         }
     }
 
-    show(node, x, y, canvasWidth, canvasHeight, mode = 'studios') {
+    show(node, mode = 'studios') {
         this.title.textContent = node.name;
 
-        // Clear previous content
-        this.desc.textContent = '';
-        this.link.textContent = '';
+        // Hide placeholder desc, we will use dynamic content area
+        this.desc.style.display = 'none';
+        this.content.innerHTML = '';
+
+        // Reset link
+        this.link.classList.add('hidden');
         this.link.href = '#';
 
         if (mode === 'studios' || mode === 'brands') {
@@ -266,28 +270,23 @@ class Popup {
 
             html += '</div>';
 
-            this.desc.innerHTML = html;
+            this.content.innerHTML = html;
 
-            // Website logic (for studios and brands with websites)
-            // Website logic (for studios and brands with websites)
-            // Website logic (for studios and brands with websites)
+            // Website logic
             const websiteUrl = node.data.website;
             if (websiteUrl) {
-                // If it's a generic Simon Allmer link, show "Access"
-                // If it's a specific domain (like lunyra.com), show the domain
+                // Determine button text
                 if (websiteUrl.includes('simonallmer.com')) {
                     this.link.textContent = 'Access';
                 } else {
                     const displayUrl = websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
                     this.link.textContent = displayUrl;
                 }
+
                 this.link.href = websiteUrl;
-                this.link.style.display = 'inline-block';
-            } else {
-                this.link.style.display = 'none';
+                this.link.classList.remove('hidden');
             }
         } else if (mode === 'cities') {
-            // City Mode Layout
             const events = node.data.events || [];
             const locations = node.data.locations || [];
 
@@ -307,43 +306,22 @@ class Popup {
 
             html += '</div>';
 
-            this.desc.innerHTML = html;
-            this.link.style.display = 'none';
+            this.content.innerHTML = html;
         }
 
-        // Position
-        let left = x + 60; // Default to right side
-        let top = y - 50;
-
-        // Boundary checks
-        const width = 300; // estimated width
-        const height = 200; // estimated height
-
-        // If too far right, flip to left
-        if (left + width > canvasWidth) {
-            left = x - width - 60;
-        }
-
-        // If too far bottom, push up
-        if (top + height > canvasHeight) {
-            top = canvasHeight - height - 20;
-        }
-
-        // If too far top, push down
-        if (top < 20) {
-            top = 20;
-        }
-
-        this.element.style.left = `${left}px`;
-        this.element.style.top = `${top}px`;
-        this.element.style.borderColor = node.color; // Dynamic border color
-
+        // Color accent
+        this.element.style.borderColor = node.color;
         this.element.classList.add('active');
     }
 
     hide() {
         if (this.element) {
             this.element.classList.remove('active');
+            // Reset to placeholder state
+            this.desc.style.display = 'block';
+            this.content.innerHTML = '';
+            this.link.classList.add('hidden');
+            this.title.textContent = 'Select a Node';
         }
     }
 }
@@ -354,7 +332,10 @@ class GraphVisualization {
         this.ctx = this.canvas.getContext('2d');
         this.nodes = [];
         this.edges = [];
-        this.popup = new Popup();
+        this.nodes = [];
+        this.edges = [];
+        this.popup = new DetailsPanel();
+        this.selectedNode = null;
         this.selectedNode = null;
         this.hoveredNode = null;
         this.mouseX = 0;
@@ -469,7 +450,8 @@ class GraphVisualization {
                 name: 'American Portrait',
                 color: '#c0a080',
                 description: 'Coming soon',
-                products: ['Coming soon']
+                products: ['Coming soon'],
+                website: 'https://simonallmer.com/americanportrait'
             },
             {
                 id: 'believe',
@@ -500,14 +482,16 @@ class GraphVisualization {
                 name: 'Detective Noname',
                 color: '#4a4a4a',
                 description: 'Coming soon',
-                products: ['Coming soon']
+                products: ['Coming soon'],
+                website: 'https://simonallmer.com/detectivenoname'
             },
             {
                 id: 'elements',
                 name: 'Elements',
                 color: '#90ee90',
                 description: 'Coming soon',
-                products: ['Coming soon']
+                products: ['Coming soon'],
+                website: 'https://simonallmer.com/elements'
             },
             {
                 id: 'futory',
@@ -530,7 +514,8 @@ class GraphVisualization {
                 name: 'Metropole',
                 color: '#708090',
                 description: 'Coming soon',
-                products: ['Coming soon']
+                products: ['Coming soon'],
+                website: 'https://simonallmer.com/metropole'
             },
             {
                 id: 'seven-wonders',
@@ -911,7 +896,7 @@ class GraphVisualization {
         }
 
         if (clickedNode) {
-            this.popup.show(clickedNode, clickedNode.x, clickedNode.y, this.canvas.width, this.canvas.height, this.mode);
+            this.popup.show(clickedNode, this.mode);
 
             // Filter catalogue if in studios mode
             if (this.mode === 'studios') {
