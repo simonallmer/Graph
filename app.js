@@ -228,6 +228,7 @@ class Edge {
     }
 }
 
+
 class DetailsPanel {
     constructor() {
         this.element = document.getElementById('details-panel');
@@ -304,6 +305,13 @@ class DetailsPanel {
                 html += '</ul></div>';
             }
 
+            const partners = node.data.partners || [];
+            if (partners.length > 0) {
+                html += '<div class="detail-section"><h4>Partners</h4><ul>';
+                partners.forEach(partner => html += `<li>${partner}</li>`);
+                html += '</ul></div>';
+            }
+
             html += '</div>';
 
             this.content.innerHTML = html;
@@ -371,7 +379,7 @@ class GraphVisualization {
                 color: '#fbbf24',
                 description: 'Description coming soon',
                 website: 'https://allmermusic.com',
-                products: ['Albums', 'Soundtracks']
+                products: ['Studio Albums', 'Score Albums']
             },
             {
                 id: 'games',
@@ -432,8 +440,22 @@ class GraphVisualization {
                 id: 'vienna',
                 name: 'Vienna',
                 color: '#a0a0a0',
-                events: ['Coming Soon'],
-                locations: ['Coming Soon']
+                events: [
+                    '<div style="color: #10b981;">' +
+                    '<b><a href="https://spielefest.wien" target="_blank" style="color: inherit;">Spielefest</a></b><br>' +
+                    'Studios: Allmer Games<br>' +
+                    'Next Event: 11.-12. July 2026<br>' +
+                    'Location: <a href="https://www.google.com/maps/search/?api=1&query=Austria+Center+Vienna" target="_blank" style="color: inherit;">Austria Center</a>' +
+                    '</div>'
+                ],
+                locations: [
+                    '<b>Wieden</b> - <a href="https://www.google.com/maps/search/?api=1&query=Kolschitzkygasse+14-18+Vienna" target="_blank" style="color: inherit;">Kolschitzkygasse 14-18</a>',
+                    '<b>Döbling</b> - <a href="https://www.google.com/maps/search/?api=1&query=Krottenbachstraße+140+Vienna" target="_blank" style="color: inherit;">Krottenbachstraße 140</a>'
+                ],
+                partners: [
+                    '<a href="https://www.paradice.wien" target="_blank" style="color: #10b981; font-weight: bold;">Paradice</a><br><span style="font-size: 0.9em; opacity: 0.8;">Gaming Events</span>',
+                    '<a href="https://www.zuckerlwerkstatt.at" target="_blank" style="color: #ec4899; font-weight: bold;">Zuckerlwerkstatt</a><br><span style="font-size: 0.9em; opacity: 0.8;">Candy Production</span>'
+                ]
             },
             {
                 id: 'singapore',
@@ -448,7 +470,7 @@ class GraphVisualization {
             {
                 id: 'american-portrait',
                 name: 'American Portrait',
-                color: '#c0a080',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/americanportrait'
@@ -456,7 +478,7 @@ class GraphVisualization {
             {
                 id: 'believe',
                 name: 'Believe',
-                color: '#87ceeb',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://believegame.com'
@@ -464,7 +486,7 @@ class GraphVisualization {
             {
                 id: 'chronicle',
                 name: 'Chronicle',
-                color: '#8b7355',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/chronicle'
@@ -472,7 +494,7 @@ class GraphVisualization {
             {
                 id: 'colbu',
                 name: 'Colbu',
-                color: '#ff6b6b',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://colbu.com'
@@ -480,7 +502,7 @@ class GraphVisualization {
             {
                 id: 'detective-noname',
                 name: 'Detective Noname',
-                color: '#4a4a4a',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/detectivenoname'
@@ -488,7 +510,7 @@ class GraphVisualization {
             {
                 id: 'elements',
                 name: 'Elements',
-                color: '#90ee90',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/elements'
@@ -496,7 +518,7 @@ class GraphVisualization {
             {
                 id: 'futory',
                 name: 'Futory',
-                color: '#9370db',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://futory.com'
@@ -504,7 +526,7 @@ class GraphVisualization {
             {
                 id: 'lunyra',
                 name: 'Lunyra',
-                color: '#ffd700',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://lunyra.com'
@@ -512,7 +534,7 @@ class GraphVisualization {
             {
                 id: 'metropole',
                 name: 'Metropole',
-                color: '#708090',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/metropole'
@@ -520,7 +542,7 @@ class GraphVisualization {
             {
                 id: 'seven-wonders',
                 name: 'Seven Wonders',
-                color: '#20b2aa',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://sevenwondersgames.com'
@@ -528,7 +550,7 @@ class GraphVisualization {
             {
                 id: 'society-review',
                 name: 'Society Review',
-                color: '#cd853f',
+                color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://societyreview.org'

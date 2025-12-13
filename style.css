@@ -76,6 +76,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+    text-decoration: none;
+}
+
 /* ========================================
    Animated Background Particles
    ======================================== */
@@ -171,7 +175,7 @@ body {
 .mission-statement {
     max-width: 600px;
     margin: 0 auto;
-    text-align: center;
+    text-align: left;
     color: var(--color-text-secondary);
 }
 
@@ -334,7 +338,6 @@ body {
     font-weight: 600;
     color: var(--color-text-secondary);
     margin-bottom: var(--spacing-xs);
-    text-transform: uppercase;
     letter-spacing: 0.05em;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: var(--spacing-xs);
@@ -486,7 +489,6 @@ body {
     font-weight: 700;
     margin-bottom: var(--spacing-xs);
     color: #ffffff;
-    text-transform: uppercase;
     letter-spacing: 0.1em;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
@@ -680,7 +682,7 @@ body {
     font-size: var(--font-size-sm);
     font-weight: 600;
     margin-bottom: 0.5rem;
-    text-transform: uppercase;
+    margin-bottom: 0.5rem;
     letter-spacing: 0.05em;
 }
 
