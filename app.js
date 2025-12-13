@@ -580,13 +580,13 @@ class GraphVisualization {
                 items: [
                     { name: 'G001 Pyramid', link: 'https://simonallmer.com/pyramid' },
                     { name: 'G002 Nectar', link: 'https://simonallmer.com/nectar' },
-                    { name: 'G003 Futory Cards Unity', link: 'https://simonallmer.com/futorycardsunity' },
+                    { name: 'G003 Futory - Cards Unity', link: 'https://simonallmer.com/futory' },
                     { name: 'G004 Elements', link: 'https://simonallmer.com/elements' },
                     { name: 'G005 Gardens', link: 'https://simonallmer.com/gardens' },
                     { name: 'G006 Temple', link: 'https://simonallmer.com/temple' },
                     { name: 'G007 Believe', link: 'https://simonallmer.com/believe' },
-                    { name: 'G008 Futory Cards Duality', link: 'https://simonallmer.com/futorycardsduality' },
-                    { name: 'G009 Detective Noname and the Silent Circle', link: 'https://simonallmer.com/detectivenonameandthesilentcircle' },
+                    { name: 'G008 Futory - Cards Duality', link: 'https://simonallmer.com/futory' },
+                    { name: 'G009 Detective Noname and the Silent Circle', link: 'https://simonallmer.com/noname' },
                     { name: 'G010 Statue', link: 'https://simonallmer.com/statue' },
                     { name: 'G011 Mausoleum', link: 'https://simonallmer.com/mausoleum' },
                     { name: 'G012 Colossus', link: 'https://simonallmer.com/colossus' },
@@ -598,7 +598,7 @@ class GraphVisualization {
             'Allmer Journals': {
                 color: '#8b4513',
                 items: [
-                    { name: 'J001 Simon Allmer World', link: 'https://simonallmer.com/simonallmerworld' },
+                    { name: 'J001 Simon Allmer World', link: 'https://simonallmer.com/world' },
                     { name: 'J002 Society Review', link: 'https://simonallmer.com/societyreview' },
                     { name: 'J003 Chronicle', link: 'https://simonallmer.com/chronicle' },
                     { name: 'J004 ACRONYM', link: 'https://simonallmer.com/acronym' }

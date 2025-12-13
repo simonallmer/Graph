@@ -121,6 +121,8 @@ body {
     z-index: 1;
     padding: 0;
     /* Ensure no padding */
+    padding-bottom: 3rem;
+    /* Space for footer */
 }
 
 /* ========================================
@@ -281,6 +283,8 @@ body {
     height: 100%;
     display: block;
     cursor: grab;
+    touch-action: none;
+    /* Prevent default touch actions like scrolling */
 }
 
 #networkCanvas:active {
@@ -364,7 +368,7 @@ body {
    ======================================== */
 .legend {
     position: absolute;
-    bottom: var(--spacing-lg);
+    bottom: 5rem;
     left: var(--spacing-lg);
     min-width: 200px;
 }
@@ -442,7 +446,7 @@ body {
    ======================================== */
 .catalogue {
     position: absolute;
-    bottom: var(--spacing-lg);
+    bottom: 5rem;
     left: var(--spacing-lg);
     min-width: 300px;
     max-width: 400px;
@@ -538,7 +542,7 @@ body {
    ======================================== */
 .controls {
     position: absolute;
-    bottom: var(--spacing-lg);
+    bottom: 5rem;
     right: var(--spacing-lg);
 }
 
@@ -741,6 +745,18 @@ body {
         bottom: auto;
         right: auto;
         margin: var(--spacing-md) var(--spacing-lg);
+        display: flex;
+        justify-content: center;
+    }
+
+    .catalogue {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        margin: 0 var(--spacing-md) var(--spacing-md);
+        max-height: 40vh;
+        width: auto;
+        min-width: 0;
     }
 
     .canvas-wrapper {
