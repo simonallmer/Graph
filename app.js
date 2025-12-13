@@ -269,11 +269,17 @@ class Popup {
             this.desc.innerHTML = html;
 
             // Website logic (for studios and brands with websites)
+            // Website logic (for studios and brands with websites)
             const websiteUrl = node.data.website;
             if (websiteUrl) {
-                const displayUrl = websiteUrl.replace(/^https?:\/\//, '');
+                // If in brands mode, show "Access", otherwise show formatted URL
+                if (mode === 'brands') {
+                    this.link.textContent = 'Access';
+                } else {
+                    const displayUrl = websiteUrl.replace(/^https?:\/\//, '');
+                    this.link.textContent = displayUrl;
+                }
                 this.link.href = websiteUrl;
-                this.link.textContent = displayUrl;
                 this.link.style.display = 'inline-block';
             } else {
                 this.link.style.display = 'none';
@@ -476,7 +482,8 @@ class GraphVisualization {
                 name: 'Chronicle',
                 color: '#8b7355',
                 description: 'Coming soon',
-                products: ['Coming soon']
+                products: ['Coming soon'],
+                website: 'https://simonallmer.com/chronicle'
             },
             {
                 id: 'colbu',
