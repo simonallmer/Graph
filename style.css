@@ -136,7 +136,8 @@ body {
     gap: var(--spacing-md);
     padding: var(--spacing-lg) var(--spacing-xl);
     text-align: center;
-    z-index: 10;
+    z-index: 11;
+    /* Header above panels */
     width: 100%;
     background: linear-gradient(to bottom, #111111 0%, rgba(10, 10, 15, 0.5) 100%);
 }
@@ -453,6 +454,8 @@ body {
     max-height: 60vh;
     overflow-y: auto;
     display: none;
+    z-index: 20;
+    /* Ensure it is above background */
 }
 
 .catalogue.active {
@@ -497,8 +500,10 @@ body {
 .catalogue-item {
     font-size: 0.8rem;
     color: #ffffff;
-    font-family: 'Courier New', monospace;
+    font-family: var(--font-family);
+    /* Modern font */
     padding: 0.15rem 0;
+    letter-spacing: 0.05em;
 }
 
 .catalogue-item.tba {
@@ -783,6 +788,10 @@ body {
    Footer
    ======================================== */
 .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     padding: var(--spacing-md);
     text-align: center;
     color: var(--color-text-secondary);
