@@ -1,0 +1,1022 @@
+// ========================================
+// Graph Network Visualization - K6 Complete Graph
+// ========================================
+
+class Node {
+    constructor(id, name, color, x, y, data = {}) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.targetColor = color; // For color transitions
+        this.data = data; // Generic data holder
+        this.x = x;
+        this.y = y;
+        this.vx = 0;
+        this.vy = 0;
+        this.radius = 40;
+        this.isHovered = false;
+        this.isDragging = false;
+        this.pulsePhase = Math.random() * Math.PI * 2;
+    }
+
+    draw(ctx, time) {
+        // Smooth color transition
+        // Smooth color transition
+        if (this.color !== this.targetColor) {
+            this.color = this.lerpColor(this.color, this.targetColor, 0.05);
+        }
+
+        // Smooth radius transition
+        const targetRadius = 40; // Default target radius
+        if (Math.abs(this.radius - targetRadius) > 0.5) {
+            this.radius += (targetRadius - this.radius) * 0.05;
+        } else {
+            this.radius = targetRadius;
+        }
+
+        const pulse = Math.sin(time * 0.002 + this.pulsePhase) * 0.1 + 0.9;
+        const currentRadius = this.radius * (this.isHovered ? 1.2 : 1) * pulse;
+
+        // Outer glow
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, currentRadius * 2);
+        gradient.addColorStop(0, this.color + '40');
+        gradient.addColorStop(0.5, this.color + '20');
+        gradient.addColorStop(1, this.color + '00');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, currentRadius * 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Main circle
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = this.isHovered ? 30 : 20;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, currentRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Inner glow
+        const innerGradient = ctx.createRadialGradient(
+            this.x - currentRadius * 0.3,
+            this.y - currentRadius * 0.3,
+            0,
+            this.x,
+            this.y,
+            currentRadius
+        );
+        innerGradient.addColorStop(0, '#ffffff80');
+        innerGradient.addColorStop(1, this.color + '00');
+
+        ctx.fillStyle = innerGradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, currentRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Reset shadow
+        ctx.shadowBlur = 0;
+
+        // Text
+        ctx.fillStyle = '#ffffff';
+        const fontSize = this.isHovered ? 16 : 14;
+        ctx.font = `600 ${fontSize}px Outfit, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Split text into lines
+        const words = this.name.split(' ');
+        if (words.length > 1) {
+            ctx.fillText(words[0], this.x, this.y - 6);
+            ctx.fillText(words[1], this.x, this.y + 8);
+        } else {
+            ctx.fillText(this.name, this.x, this.y);
+        }
+    }
+
+    update(nodes, width, height, damping = 0.95) {
+        if (this.isDragging) return;
+
+        // Apply forces from other nodes (repulsion)
+        nodes.forEach(other => {
+            if (other === this) return;
+
+            const dx = this.x - other.x;
+            const dy = this.y - other.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 200) {
+                const force = (200 - distance) * 0.005;
+                this.vx += (dx / distance) * force;
+                this.vy += (dy / distance) * force;
+            }
+        });
+
+        // Attraction to center
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const dx = centerX - this.x;
+        const dy = centerY - this.y;
+
+        this.vx += dx * 0.0005;
+        this.vy += dy * 0.0005;
+
+        // Apply velocity
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Damping
+        this.vx *= damping;
+        this.vy *= damping;
+
+        // Boundary constraints
+        const margin = this.radius * 2;
+        if (this.x < margin) {
+            this.x = margin;
+            this.vx *= -0.5;
+        }
+        if (this.x > width - margin) {
+            this.x = width - margin;
+            this.vx *= -0.5;
+        }
+        if (this.y < margin) {
+            this.y = margin;
+            this.vy *= -0.5;
+        }
+        if (this.y > height - margin) {
+            this.y = height - margin;
+            this.vy *= -0.5;
+        }
+    }
+
+    // Helper for color interpolation
+    lerpColor(a, b, amount) {
+        const ah = parseInt(a.replace(/#/g, ''), 16),
+            ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+            bh = parseInt(b.replace(/#/g, ''), 16),
+            br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+            rr = ar + amount * (br - ar),
+            rg = ag + amount * (bg - ag),
+            rb = ab + amount * (bb - ab);
+
+        return '#' + ((1 << 24) + (Math.round(rr) << 16) + (Math.round(rg) << 8) + (Math.round(rb) | 0)).toString(16).slice(1);
+    }
+
+    contains(x, y) {
+        const dx = x - this.x;
+        const dy = y - this.y;
+        return Math.sqrt(dx * dx + dy * dy) < this.radius;
+    }
+}
+
+class Edge {
+    constructor(node1, node2) {
+        this.node1 = node1;
+        this.node2 = node2;
+        this.flowOffset = Math.random() * 100;
+    }
+
+    draw(ctx, time) {
+        const isHighlighted = this.node1.isHovered || this.node2.isHovered;
+
+        // Create gradient
+        const gradient = ctx.createLinearGradient(
+            this.node1.x, this.node1.y,
+            this.node2.x, this.node2.y
+        );
+
+        if (isHighlighted) {
+            gradient.addColorStop(0, this.node1.color + 'cc');
+            gradient.addColorStop(0.5, '#ffffff80');
+            gradient.addColorStop(1, this.node2.color + 'cc');
+        } else {
+            gradient.addColorStop(0, this.node1.color + '40');
+            gradient.addColorStop(0.5, '#ffffff20');
+            gradient.addColorStop(1, this.node2.color + '40');
+        }
+
+        // Draw main line
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = isHighlighted ? 3 : 1.5;
+        ctx.shadowColor = isHighlighted ? '#ffffff' : 'transparent';
+        ctx.shadowBlur = isHighlighted ? 10 : 0;
+
+        ctx.beginPath();
+        ctx.moveTo(this.node1.x, this.node1.y);
+        ctx.lineTo(this.node2.x, this.node2.y);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+
+        // Animated flow particles
+        if (isHighlighted) {
+            const flowProgress = ((time * 0.001 + this.flowOffset) % 100) / 100;
+            const particleX = this.node1.x + (this.node2.x - this.node1.x) * flowProgress;
+            const particleY = this.node1.y + (this.node2.y - this.node1.y) * flowProgress;
+
+            const particleGradient = ctx.createRadialGradient(
+                particleX, particleY, 0,
+                particleX, particleY, 8
+            );
+            particleGradient.addColorStop(0, '#ffffff');
+            particleGradient.addColorStop(1, '#ffffff00');
+
+            ctx.fillStyle = particleGradient;
+            ctx.beginPath();
+            ctx.arc(particleX, particleY, 8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+}
+
+class Popup {
+    constructor() {
+        this.element = document.getElementById('node-popup');
+        this.title = document.getElementById('popup-title');
+        this.desc = document.getElementById('popup-desc');
+        this.link = document.getElementById('popup-link');
+        this.closeBtn = document.getElementById('popup-close');
+
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.hide());
+        }
+    }
+
+    show(node, x, y, canvasWidth, canvasHeight, mode = 'studios') {
+        this.title.textContent = node.name;
+
+        // Clear previous content
+        this.desc.textContent = '';
+        this.link.textContent = '';
+        this.link.href = '#';
+
+        if (mode === 'studios' || mode === 'brands') {
+            const products = node.data.products || [];
+
+            let html = '<div class="studio-details">';
+
+            // Description
+            html += `<p class="studio-description">${node.data.description}</p>`;
+
+            // Products
+            if (products.length > 0) {
+                html += '<div class="detail-section"><h4>Products</h4><ul>';
+                products.forEach(prod => html += `<li>${prod}</li>`);
+                html += '</ul></div>';
+            }
+
+            html += '</div>';
+
+            this.desc.innerHTML = html;
+
+            // Website logic (for studios and brands with websites)
+            const websiteUrl = node.data.website;
+            if (websiteUrl) {
+                const displayUrl = websiteUrl.replace(/^https?:\/\//, '');
+                this.link.href = websiteUrl;
+                this.link.textContent = displayUrl;
+                this.link.style.display = 'inline-block';
+            } else {
+                this.link.style.display = 'none';
+            }
+        } else if (mode === 'cities') {
+            // City Mode Layout
+            const events = node.data.events || [];
+            const locations = node.data.locations || [];
+
+            let html = '<div class="city-details">';
+
+            if (events.length > 0) {
+                html += '<div class="detail-section"><h4>Events</h4><ul>';
+                events.forEach(ev => html += `<li>${ev}</li>`);
+                html += '</ul></div>';
+            }
+
+            if (locations.length > 0) {
+                html += '<div class="detail-section"><h4>Locations</h4><ul>';
+                locations.forEach(loc => html += `<li>${loc}</li>`);
+                html += '</ul></div>';
+            }
+
+            html += '</div>';
+
+            this.desc.innerHTML = html;
+            this.link.style.display = 'none';
+        }
+
+        // Position
+        let left = x + 60; // Default to right side
+        let top = y - 50;
+
+        // Boundary checks
+        const width = 300; // estimated width
+        const height = 200; // estimated height
+
+        // If too far right, flip to left
+        if (left + width > canvasWidth) {
+            left = x - width - 60;
+        }
+
+        // If too far bottom, push up
+        if (top + height > canvasHeight) {
+            top = canvasHeight - height - 20;
+        }
+
+        // If too far top, push down
+        if (top < 20) {
+            top = 20;
+        }
+
+        this.element.style.left = `${left}px`;
+        this.element.style.top = `${top}px`;
+        this.element.style.borderColor = node.color; // Dynamic border color
+
+        this.element.classList.add('active');
+    }
+
+    hide() {
+        if (this.element) {
+            this.element.classList.remove('active');
+        }
+    }
+}
+
+class GraphVisualization {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.nodes = [];
+        this.edges = [];
+        this.popup = new Popup();
+        this.selectedNode = null;
+        this.hoveredNode = null;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.time = 0;
+        this.animationProgress = 0; // 0 to 1, for initial formation animation
+        this.isAnimating = true;
+
+        this.isAnimating = true;
+        this.mode = 'studios'; // 'studios' or 'cities'
+
+        // Data Definitions
+        this.studiosData = [
+            {
+                id: 'comics',
+                name: 'Allmer Comics',
+                color: '#ef4444',
+                description: 'Description coming soon',
+                website: 'https://allmercomics.com',
+                products: ['Comic Books', 'Digital Comics']
+            },
+            {
+                id: 'films',
+                name: 'Allmer Films',
+                color: '#3b82f6',
+                description: 'Description coming soon',
+                website: 'https://allmerfilms.com',
+                products: ['Feature Films', 'Limited Series']
+            },
+            {
+                id: 'music',
+                name: 'Allmer Music',
+                color: '#fbbf24',
+                description: 'Description coming soon',
+                website: 'https://allmermusic.com',
+                products: ['Albums', 'Soundtracks']
+            },
+            {
+                id: 'games',
+                name: 'Allmer Games',
+                color: '#10b981',
+                description: 'Description coming soon',
+                website: 'https://allmergames.com',
+                products: ['Tabletop Games', 'Video Games']
+            },
+            {
+                id: 'journals',
+                name: 'Allmer Journals',
+                color: '#8b4513',
+                description: 'Description coming soon',
+                website: 'https://allmerjournals.com',
+                products: ['Magazines', 'Books']
+            },
+            {
+                id: 'snacks',
+                name: 'Allmer Snacks',
+                color: '#ec4899',
+                description: 'Description coming soon',
+                website: 'https://allmersnacks.com',
+                products: ['Food', 'Beverages']
+            }
+        ];
+
+        this.citiesData = [
+            {
+                id: 'nyc',
+                name: 'New York',
+                color: '#a0a0a0',
+                events: ['Coming Soon'],
+                locations: ['Coming Soon']
+            },
+            {
+                id: 'london',
+                name: 'London',
+                color: '#a0a0a0',
+                events: ['Coming Soon'],
+                locations: ['Coming Soon']
+            },
+            {
+                id: 'paris',
+                name: 'Paris',
+                color: '#a0a0a0',
+                events: ['Coming Soon'],
+                locations: ['Coming Soon']
+            },
+            {
+                id: 'milan',
+                name: 'Milan',
+                color: '#a0a0a0',
+                events: ['Coming Soon'],
+                locations: ['Coming Soon']
+            },
+            {
+                id: 'vienna',
+                name: 'Vienna',
+                color: '#a0a0a0',
+                events: ['Coming Soon'],
+                locations: ['Coming Soon']
+            },
+            {
+                id: 'singapore',
+                name: 'Singapore',
+                color: '#a0a0a0',
+                events: ['Coming Soon'],
+                locations: ['Coming Soon']
+            }
+        ];
+
+        this.brandsData = [
+            {
+                id: 'american-portrait',
+                name: 'American Portrait',
+                color: '#c0a080',
+                description: 'Coming soon',
+                products: ['Coming soon']
+            },
+            {
+                id: 'believe',
+                name: 'Believe',
+                color: '#87ceeb',
+                description: 'Coming soon',
+                products: ['Coming soon'],
+                website: 'https://believegame.com'
+            },
+            {
+                id: 'chronicle',
+                name: 'Chronicle',
+                color: '#8b7355',
+                description: 'Coming soon',
+                products: ['Coming soon']
+            },
+            {
+                id: 'colbu',
+                name: 'Colbu',
+                color: '#ff6b6b',
+                description: 'Coming soon',
+                products: ['Coming soon'],
+                website: 'https://colbu.com'
+            },
+            {
+                id: 'detective-noname',
+                name: 'Detective Noname',
+                color: '#4a4a4a',
+                description: 'Coming soon',
+                products: ['Coming soon']
+            },
+            {
+                id: 'elements',
+                name: 'Elements',
+                color: '#90ee90',
+                description: 'Coming soon',
+                products: ['Coming soon']
+            },
+            {
+                id: 'futory',
+                name: 'Futory',
+                color: '#9370db',
+                description: 'Coming soon',
+                products: ['Coming soon'],
+                website: 'https://futory.com'
+            },
+            {
+                id: 'lunyra',
+                name: 'Lunyra',
+                color: '#ffd700',
+                description: 'Coming soon',
+                products: ['Coming soon'],
+                website: 'https://lunyra.com'
+            },
+            {
+                id: 'metropole',
+                name: 'Metropole',
+                color: '#708090',
+                description: 'Coming soon',
+                products: ['Coming soon']
+            },
+            {
+                id: 'seven-wonders',
+                name: 'Seven Wonders',
+                color: '#20b2aa',
+                description: 'Coming soon',
+                products: ['Coming soon']
+            },
+            {
+                id: 'society-review',
+                name: 'Society Review',
+                color: '#cd853f',
+                description: 'Coming soon',
+                products: ['Coming soon'],
+                website: 'https://societyreview.org'
+            }
+        ];
+
+        this.catalogueData = {
+            'Allmer Comics': {
+                color: '#ef4444',
+                items: [
+                    { name: 'C001 Kissinger: A World Destroyed [TBA]' },
+                    { name: 'C002 Carter: The Blood Beneath the Soil [TBA]' },
+                    { name: 'C003 Futory: Dragon Kingdom [TBA]' }
+                ]
+            },
+            'Allmer Films': {
+                color: '#3b82f6',
+                items: [
+                    { name: 'F001 Kissinger [TBA]' },
+                    { name: 'F002 Carter [TBA]' },
+                    { name: 'F003 Futory: Dragon Kingdom [TBA]' }
+                ]
+            },
+            'Allmer Music': {
+                color: '#fbbf24',
+                items: [
+                    { name: 'M001 American Portrait', link: 'https://simonallmer.com/americanportrait' },
+                    { name: 'M002 Sin [TBA]' },
+                    { name: 'M003 Futory [TBA]' }
+                ]
+            },
+            'Allmer Games': {
+                color: '#10b981',
+                items: [
+                    { name: 'G001 Pyramid', link: 'https://simonallmer.com/pyramid' },
+                    { name: 'G002 Nectar', link: 'https://simonallmer.com/nectar' },
+                    { name: 'G003 Futory Cards Unity', link: 'https://simonallmer.com/futorycardsunity' },
+                    { name: 'G004 Elements', link: 'https://simonallmer.com/elements' },
+                    { name: 'G005 Gardens', link: 'https://simonallmer.com/gardens' },
+                    { name: 'G006 Temple', link: 'https://simonallmer.com/temple' },
+                    { name: 'G007 Believe', link: 'https://simonallmer.com/believe' },
+                    { name: 'G008 Futory Cards Duality', link: 'https://simonallmer.com/futorycardsduality' },
+                    { name: 'G009 Detective Noname and the Silent Circle', link: 'https://simonallmer.com/detectivenonameandthesilentcircle' },
+                    { name: 'G010 Statue', link: 'https://simonallmer.com/statue' },
+                    { name: 'G011 Mausoleum', link: 'https://simonallmer.com/mausoleum' },
+                    { name: 'G012 Colossus', link: 'https://simonallmer.com/colossus' },
+                    { name: 'G013 Pharos', link: 'https://simonallmer.com/pharos' },
+                    { name: 'G014 Capital [TBA]' },
+                    { name: 'G015 Equilibrium [TBA]' }
+                ]
+            },
+            'Allmer Journals': {
+                color: '#8b4513',
+                items: [
+                    { name: 'J001 Simon Allmer World', link: 'https://simonallmer.com/simonallmerworld' },
+                    { name: 'J002 Society Review', link: 'https://simonallmer.com/societyreview' },
+                    { name: 'J003 Chronicle', link: 'https://simonallmer.com/chronicle' },
+                    { name: 'J004 ACRONYM', link: 'https://simonallmer.com/acronym' }
+                ]
+            },
+            'Allmer Snacks': {
+                color: '#ec4899',
+                items: [
+                    { name: 'S001 Solar-Soda', link: 'https://simonallmer.com/solarsoda' },
+                    { name: 'S002 Metropole', link: 'https://simonallmer.com/metropole' },
+                    { name: 'S003 Hot Ice [TBA]' }
+                ]
+            }
+        };
+
+        this.init();
+        this.setupEventListeners();
+        this.animate();
+    }
+
+    init() {
+        // Set canvas size
+        this.resize();
+
+        // Define the 6 studios
+
+
+        // Calculate positions
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        const radius = Math.min(centerX, centerY) * 0.5;
+
+        // Create nodes with initial triforce positions
+        // Use studiosData as initial data
+        this.studiosData.forEach((studio, index) => {
+            // Calculate initial triforce positions (triangular formation)
+            let initialX, initialY;
+            const triforceRadius = radius * 0.3;
+
+            if (index < 3) {
+                // Top triangle (3 nodes)
+                const triAngle = (index / 3) * Math.PI * 2 - Math.PI / 2;
+                initialX = centerX + Math.cos(triAngle) * triforceRadius;
+                initialY = centerY + Math.sin(triAngle) * triforceRadius - radius * 0.3;
+            } else {
+                // Bottom triangle (3 nodes)
+                const triAngle = ((index - 3) / 3) * Math.PI * 2 + Math.PI / 6;
+                initialX = centerX + Math.cos(triAngle) * triforceRadius;
+                initialY = centerY + Math.sin(triAngle) * triforceRadius + radius * 0.3;
+            }
+
+            // Calculate final hexagon positions
+            const finalAngle = (index / 6) * Math.PI * 2 - Math.PI / 2;
+            const finalX = centerX + Math.cos(finalAngle) * radius;
+            const finalY = centerY + Math.sin(finalAngle) * radius;
+
+
+            // Store full data object
+            const node = new Node(studio.id, studio.name, studio.color, initialX, initialY, studio);
+            node.targetX = finalX;
+            node.targetY = finalY;
+            node.initialX = initialX;
+            node.initialY = initialY;
+            this.nodes.push(node);
+        });
+
+        // Create edges - complete graph K6 (every node connected to every other node)
+        for (let i = 0; i < this.nodes.length; i++) {
+            for (let j = i + 1; j < this.nodes.length; j++) {
+                this.edges.push(new Edge(this.nodes[i], this.nodes[j]));
+            }
+        }
+
+        // Update info panel
+
+    }
+
+    resize() {
+        const rect = this.canvas.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+    }
+
+    setupEventListeners() {
+        // Mouse events
+        this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        this.canvas.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+        this.canvas.addEventListener('mouseleave', () => this.handleMouseLeave());
+        this.canvas.addEventListener('click', (e) => this.handleClick(e));
+
+        // Window resize
+        window.addEventListener('resize', () => this.resize());
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', () => this.resetLayout());
+
+        // Mode switch
+        const modeBtns = document.querySelectorAll('.switch-btn');
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const newMode = btn.dataset.mode;
+                if (newMode !== this.mode) {
+                    this.switchMode(newMode);
+                    // Update UI
+                    modeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                }
+            });
+        });
+    }
+
+    switchMode(newMode) {
+        this.mode = newMode;
+        this.popup.hide();
+
+        const targetData = newMode === 'studios' ? this.studiosData :
+            newMode === 'cities' ? this.citiesData :
+                this.brandsData;
+
+        // Use transition graph for all changes to ensure smooth morphing
+        this.transitionGraph(targetData);
+
+        // Update UI panels
+        this.updateCatalogue(newMode);
+    }
+
+    transitionGraph(targetData) {
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        const radius = Math.min(centerX, centerY) * 0.5;
+
+        // Current nodes map (reuse by index)
+        const currentNodes = this.nodes;
+        const newNodes = [];
+
+        // Distribute target positions in circle
+        targetData.forEach((data, index) => {
+            const angle = (index / targetData.length) * Math.PI * 2 - Math.PI / 2;
+            const targetX = centerX + Math.cos(angle) * radius;
+            const targetY = centerY + Math.sin(angle) * radius;
+
+            let node;
+            if (index < currentNodes.length) {
+                // Reuse existing node
+                node = currentNodes[index];
+                node.id = data.id;
+                node.name = data.name;
+                node.data = data;
+                node.targetColor = data.color;
+
+                // For animation
+                node.initialX = node.x;
+                node.initialY = node.y;
+                node.targetX = targetX;
+                node.targetY = targetY;
+            } else {
+                // Create new node "splitting" from a previous one
+                const parentIndex = index % currentNodes.length;
+                const parent = currentNodes[parentIndex] || currentNodes[0];
+
+                // Random tiny offset to prevent stacking logic errors
+                const startX = parent.x + (Math.random() - 0.5) * 5;
+                const startY = parent.y + (Math.random() - 0.5) * 5;
+
+                node = new Node(data.id, data.name, data.color, startX, startY, data);
+                node.color = parent.color; // Start with parent color
+                node.targetColor = data.color;
+                node.radius = 0; // Start small to grow
+
+                // For animation
+                node.initialX = startX;
+                node.initialY = startY;
+                node.targetX = targetX;
+                node.targetY = targetY;
+            }
+            newNodes.push(node);
+        });
+
+        this.nodes = newNodes;
+
+        // Update edges - re-link all
+        this.edges = [];
+        for (let i = 0; i < this.nodes.length; i++) {
+            for (let j = i + 1; j < this.nodes.length; j++) {
+                this.edges.push(new Edge(this.nodes[i], this.nodes[j]));
+            }
+        }
+
+        // Trigger animation
+        this.animationProgress = 0;
+        this.isAnimating = true;
+    }
+
+    updateCatalogue(mode, filterStudio = null) {
+        const cataloguePanel = document.getElementById('catalogue');
+        const catalogueContent = document.getElementById('catalogue-content');
+
+        // Only show catalogue for studios and brands
+        if (mode === 'studios') {
+            cataloguePanel.classList.add('active');
+            catalogueContent.innerHTML = '';
+
+            // Filter studios if a specific one is selected
+            const studiesToShow = filterStudio
+                ? { [filterStudio]: this.catalogueData[filterStudio] }
+                : this.catalogueData;
+
+            // Display studio catalogues
+            Object.keys(studiesToShow).forEach(studioName => {
+                const studio = studiesToShow[studioName];
+
+                // Generate items HTML
+                const itemsHtml = studio.items.map(item => {
+                    // Handle both string and object formats
+                    const itemData = typeof item === 'string' ? { name: item } : item;
+                    const isTBA = itemData.name.includes('[TBA]');
+                    const hasLink = itemData.link && !isTBA;
+
+                    if (hasLink) {
+                        return `<a href="${itemData.link}" target="_blank" class="catalogue-item catalogue-link ${isTBA ? 'tba' : ''}">${itemData.name}</a>`;
+                    } else {
+                        return `<div class="catalogue-item ${isTBA ? 'tba' : ''}">${itemData.name}</div>`;
+                    }
+                }).join('');
+
+                const sectionHtml = `
+                    <div class="catalogue-section" style="background: ${studio.color}20; border-left: 3px solid ${studio.color};">
+                        <div class="catalogue-section-title">${studioName}</div>
+                        <div class="catalogue-items">
+                            ${itemsHtml}
+                        </div>
+                    </div>
+                `;
+                catalogueContent.insertAdjacentHTML('beforeend', sectionHtml);
+            });
+        } else if (mode === 'brands') {
+            cataloguePanel.classList.add('active');
+            catalogueContent.innerHTML = '<div class="catalogue-item" style="text-align: center; padding: 1rem;">Brand catalogue coming soon...</div>';
+        } else {
+            cataloguePanel.classList.remove('active');
+        }
+    }
+
+    handleMouseMove(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        this.mouseX = e.clientX - rect.left;
+        this.mouseY = e.clientY - rect.top;
+
+        // Update hover states
+        let foundHover = false;
+        this.nodes.forEach(node => {
+            if (!node.isDragging) {
+                const isHovered = node.contains(this.mouseX, this.mouseY);
+                node.isHovered = isHovered;
+                if (isHovered) {
+                    foundHover = true;
+                    this.hoveredNode = node;
+                }
+            }
+        });
+
+        if (!foundHover) {
+            this.hoveredNode = null;
+        }
+
+        // Dragging
+        if (this.selectedNode) {
+            this.selectedNode.x = this.mouseX;
+            this.selectedNode.y = this.mouseY;
+            this.selectedNode.vx = 0;
+            this.selectedNode.vy = 0;
+        }
+    }
+
+    handleMouseDown(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Check if clicking on a node
+        for (const node of this.nodes) {
+            if (node.contains(x, y)) {
+                this.selectedNode = node;
+                node.isDragging = true;
+                break;
+            }
+        }
+    }
+
+    handleMouseUp() {
+        if (this.selectedNode) {
+            this.selectedNode.isDragging = false;
+            this.selectedNode = null;
+        }
+    }
+
+    handleClick(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Check if clicking on a node
+        let clickedNode = null;
+        for (const node of this.nodes) {
+            if (node.contains(x, y)) {
+                clickedNode = node;
+                break;
+            }
+        }
+
+        if (clickedNode) {
+            this.popup.show(clickedNode, clickedNode.x, clickedNode.y, this.canvas.width, this.canvas.height, this.mode);
+
+            // Filter catalogue if in studios mode
+            if (this.mode === 'studios') {
+                this.updateCatalogue(this.mode, clickedNode.name);
+            }
+        } else {
+            this.popup.hide();
+            // Reset catalogue filter when clicking empty space
+            if (this.mode === 'studios') {
+                this.updateCatalogue(this.mode);
+            }
+        }
+    }
+
+    handleMouseLeave() {
+        this.nodes.forEach(node => {
+            if (!node.isDragging) {
+                node.isHovered = false;
+            }
+        });
+        this.hoveredNode = null;
+        this.handleMouseUp();
+    }
+
+    resetLayout() {
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        const radius = Math.min(centerX, centerY) * 0.5;
+
+        // Reset to triforce formation and restart animation
+        this.animationProgress = 0;
+        this.isAnimating = true;
+
+        this.nodes.forEach((node, index) => {
+            // Reset to triforce positions
+            const triforceRadius = radius * 0.3;
+            let initialX, initialY;
+
+            if (index < 3) {
+                const triAngle = (index / 3) * Math.PI * 2 - Math.PI / 2;
+                initialX = centerX + Math.cos(triAngle) * triforceRadius;
+                initialY = centerY + Math.sin(triAngle) * triforceRadius - radius * 0.3;
+            } else {
+                const triAngle = ((index - 3) / 3) * Math.PI * 2 + Math.PI / 6;
+                initialX = centerX + Math.cos(triAngle) * triforceRadius;
+                initialY = centerY + Math.sin(triAngle) * triforceRadius + radius * 0.3;
+            }
+
+            // Set final hexagon positions
+            const finalAngle = (index / this.nodes.length) * Math.PI * 2 - Math.PI / 2;
+            const finalX = centerX + Math.cos(finalAngle) * radius;
+            const finalY = centerY + Math.sin(finalAngle) * radius;
+
+            node.x = initialX;
+            node.y = initialY;
+            node.initialX = initialX;
+            node.initialY = initialY;
+            node.targetX = finalX;
+            node.targetY = finalY;
+            node.vx = 0;
+            node.vy = 0;
+        });
+
+        this.popup.hide();
+    }
+
+    update() {
+        // Update initial formation animation
+        if (this.isAnimating) {
+            this.animationProgress += 0.008; // Adjust speed here
+
+            if (this.animationProgress >= 1) {
+                this.animationProgress = 1;
+                this.isAnimating = false;
+            }
+
+            // Easing function (easeOutCubic for smooth deceleration)
+            const easeProgress = 1 - Math.pow(1 - this.animationProgress, 3);
+
+            // Interpolate node positions
+            this.nodes.forEach(node => {
+                node.x = node.initialX + (node.targetX - node.initialX) * easeProgress;
+                node.y = node.initialY + (node.targetY - node.initialY) * easeProgress;
+                node.vx = 0;
+                node.vy = 0;
+            });
+        } else {
+            // Update node physics only after animation completes
+            this.nodes.forEach(node => {
+                node.update(this.nodes, this.canvas.width, this.canvas.height, 0.92);
+            });
+        }
+    }
+
+    draw() {
+        // Clear canvas with fade effect
+        this.ctx.fillStyle = 'rgba(10, 10, 15, 0.3)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw edges
+        this.edges.forEach(edge => edge.draw(this.ctx, this.time));
+
+        // Draw nodes
+        this.nodes.forEach(node => node.draw(this.ctx, this.time));
+    }
+
+    animate() {
+        this.time++;
+        this.update();
+        this.draw();
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
+// Initialize the visualization when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    const graph = new GraphVisualization('networkCanvas');
+});
