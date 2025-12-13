@@ -270,13 +270,15 @@ class Popup {
 
             // Website logic (for studios and brands with websites)
             // Website logic (for studios and brands with websites)
+            // Website logic (for studios and brands with websites)
             const websiteUrl = node.data.website;
             if (websiteUrl) {
-                // If in brands mode, show "Access", otherwise show formatted URL
-                if (mode === 'brands') {
+                // If it's a generic Simon Allmer link, show "Access"
+                // If it's a specific domain (like lunyra.com), show the domain
+                if (websiteUrl.includes('simonallmer.com')) {
                     this.link.textContent = 'Access';
                 } else {
-                    const displayUrl = websiteUrl.replace(/^https?:\/\//, '');
+                    const displayUrl = websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
                     this.link.textContent = displayUrl;
                 }
                 this.link.href = websiteUrl;
@@ -535,7 +537,8 @@ class GraphVisualization {
                 name: 'Seven Wonders',
                 color: '#20b2aa',
                 description: 'Coming soon',
-                products: ['Coming soon']
+                products: ['Coming soon'],
+                website: 'https://sevenwondersgames.com'
             },
             {
                 id: 'society-review',
