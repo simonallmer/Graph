@@ -815,8 +815,13 @@ class GraphVisualization {
                 : this.catalogueData;
 
             // Display studio catalogues
+            // Display studio catalogues
             Object.keys(studiesToShow).forEach(studioName => {
                 const studio = studiesToShow[studioName];
+
+                // Find website for this studio
+                const studioInfo = this.studiosData.find(s => s.name === studioName);
+                const studioUrl = studioInfo ? studioInfo.website : '#';
 
                 // Generate items HTML
                 const itemsHtml = studio.items.map(item => {
@@ -834,7 +839,9 @@ class GraphVisualization {
 
                 const sectionHtml = `
                     <div class="catalogue-section" style="background: ${studio.color}20; border-left: 3px solid ${studio.color};">
-                        <div class="catalogue-section-title">${studioName}</div>
+                        <div class="catalogue-section-title">
+                            <a href="${studioUrl}" target="_blank" style="color: inherit; text-decoration: none;">${studioName}</a>
+                        </div>
                         <div class="catalogue-items">
                             ${itemsHtml}
                         </div>

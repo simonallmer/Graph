@@ -168,7 +168,6 @@ a {
 
 .back-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-50%) translateX(2px);
     border-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -520,9 +519,8 @@ a {
 }
 
 .catalogue-link:hover {
-    color: #ffd700;
     transform: translateX(4px);
-    text-decoration: underline;
+    /* No color change or underline */
 }
 
 /* Custom scrollbar for catalogue */
