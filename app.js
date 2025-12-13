@@ -619,7 +619,7 @@ class GraphVisualization {
         // Calculate positions
         const centerX = this.canvas.width / 2;
         const centerY = this.canvas.height / 2;
-        const radius = Math.min(centerX, centerY) * 0.5;
+        const radius = Math.min(centerX, centerY) * 0.4; // Reduced from 0.5 for breathing space
 
         // Create nodes with initial triforce positions
         // Use studiosData as initial data
@@ -719,7 +719,7 @@ class GraphVisualization {
     transitionGraph(targetData) {
         const centerX = this.canvas.width / 2;
         const centerY = this.canvas.height / 2;
-        const radius = Math.min(centerX, centerY) * 0.5;
+        const radius = Math.min(centerX, centerY) * 0.4; // Reduced from 0.5
 
         // Current nodes map (reuse by index)
         const currentNodes = this.nodes;
@@ -929,7 +929,7 @@ class GraphVisualization {
     resetLayout() {
         const centerX = this.canvas.width / 2;
         const centerY = this.canvas.height / 2;
-        const radius = Math.min(centerX, centerY) * 0.5;
+        const radius = Math.min(centerX, centerY) * 0.4; // Reduced from 0.5
 
         // Reset to triforce formation and restart animation
         this.animationProgress = 0;
