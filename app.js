@@ -409,13 +409,6 @@ class GraphVisualization {
 
         this.citiesData = [
             {
-                id: 'nyc',
-                name: 'New York',
-                color: '#a0a0a0',
-                events: ['Coming Soon'],
-                locations: ['Coming Soon']
-            },
-            {
                 id: 'london',
                 name: 'London',
                 color: '#a0a0a0',
@@ -423,15 +416,8 @@ class GraphVisualization {
                 locations: ['Coming Soon']
             },
             {
-                id: 'paris',
-                name: 'Paris',
-                color: '#a0a0a0',
-                events: ['Coming Soon'],
-                locations: ['Coming Soon']
-            },
-            {
-                id: 'milan',
-                name: 'Milan',
+                id: 'frankfurt',
+                name: 'Frankfurt',
                 color: '#a0a0a0',
                 events: ['Coming Soon'],
                 locations: ['Coming Soon']
@@ -458,8 +444,22 @@ class GraphVisualization {
                 ]
             },
             {
-                id: 'singapore',
-                name: 'Singapore',
+                id: 'milan',
+                name: 'Milan',
+                color: '#a0a0a0',
+                events: ['Coming Soon'],
+                locations: ['Coming Soon']
+            },
+            {
+                id: 'madrid',
+                name: 'Madrid',
+                color: '#a0a0a0',
+                events: ['Coming Soon'],
+                locations: ['Coming Soon']
+            },
+            {
+                id: 'paris',
+                name: 'Paris',
                 color: '#a0a0a0',
                 events: ['Coming Soon'],
                 locations: ['Coming Soon']

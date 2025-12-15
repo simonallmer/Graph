@@ -707,12 +707,52 @@ a {
    Responsive Design
    ======================================== */
 @media (max-width: 768px) {
+
+    /* Allow scrolling on mobile */
+    html,
+    body {
+        overflow-y: auto;
+        height: auto;
+        min-height: 100%;
+    }
+
+    .container {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+        padding-bottom: 6rem;
+        /* Ensure space for footer */
+    }
+
+    .canvas-wrapper {
+        min-height: 50vh;
+        /* Ensure graph remains visible */
+    }
+
     .title-main {
         font-size: var(--font-size-2xl);
     }
 
     .title-sub {
         font-size: var(--font-size-base);
+    }
+
+    /* Compact Header for Mobile */
+    .header {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+
+    .logo-text {
+        font-size: 2rem;
+    }
+
+    .mission-statement h2 {
+        font-size: 1.1rem;
+    }
+
+    /* Enable vertical scrolling on canvas for mobile */
+    #networkCanvas {
+        touch-action: pan-y;
     }
 
     .info-panel {
@@ -762,6 +802,16 @@ a {
 
     .canvas-wrapper {
         margin: 0 var(--spacing-md);
+    }
+
+    .controls {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin: var(--spacing-md);
+        width: auto;
+        display: flex;
+        justify-content: center;
     }
 }
 
