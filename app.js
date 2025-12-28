@@ -500,6 +500,14 @@ class GraphVisualization {
                 website: 'https://colbu.com'
             },
             {
+                id: 'cosmographia',
+                name: 'Cosmographia',
+                color: '#b0b0b0',
+                description: 'Coming soon',
+                products: ['Coming soon'],
+                website: 'https://simonallmer.com/cosmographia'
+            },
+            {
                 id: 'detective-noname',
                 name: 'Detective Noname',
                 color: '#b0b0b0',
@@ -608,7 +616,8 @@ class GraphVisualization {
                     { name: 'J001 Simon Allmer World', link: 'https://simonallmer.com/world' },
                     { name: 'J002 Society Review', link: 'https://simonallmer.com/societyreview' },
                     { name: 'J003 Chronicle', link: 'https://simonallmer.com/chronicle' },
-                    { name: 'J004 ACRONYM', link: 'https://simonallmer.com/acronym' }
+                    { name: 'J004 ACRONYM', link: 'https://simonallmer.com/acronym' },
+                    { name: 'J005 Cosmographia', link: 'https://simonallmer.com/cosmographia' }
                 ]
             },
             'Allmer Snacks': {
