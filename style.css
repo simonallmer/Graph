@@ -808,10 +808,21 @@ a {
         position: relative;
         bottom: auto;
         right: auto;
-        margin: var(--spacing-md);
-        width: auto;
+        margin: var(--spacing-md) auto;
+        width: fit-content;
         display: flex;
         justify-content: center;
+        z-index: 20;
+    }
+
+    .footer {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        padding: var(--spacing-lg) var(--spacing-md);
+        background: rgba(0, 0, 0, 0.5);
+        margin-top: var(--spacing-md);
     }
 }
 
