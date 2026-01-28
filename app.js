@@ -466,6 +466,8 @@ class GraphVisualization {
             }
         ];
 
+
+
         this.brandsData = [
             {
                 id: 'american-portrait',
@@ -810,11 +812,13 @@ class GraphVisualization {
         this.isAnimating = true;
     }
 
+
+
     updateCatalogue(mode, filterStudio = null) {
         const cataloguePanel = document.getElementById('catalogue');
         const catalogueContent = document.getElementById('catalogue-content');
 
-        // Only show catalogue for studios and brands
+        // Only show catalogue for studios, user said to remove it for brands
         if (mode === 'studios') {
             cataloguePanel.classList.add('active');
             catalogueContent.innerHTML = '';
@@ -825,9 +829,9 @@ class GraphVisualization {
                 : this.catalogueData;
 
             // Display studio catalogues
-            // Display studio catalogues
             Object.keys(studiesToShow).forEach(studioName => {
                 const studio = studiesToShow[studioName];
+                if (!studio) return;
 
                 // Find website for this studio
                 const studioInfo = this.studiosData.find(s => s.name === studioName);
@@ -859,9 +863,6 @@ class GraphVisualization {
                 `;
                 catalogueContent.insertAdjacentHTML('beforeend', sectionHtml);
             });
-        } else if (mode === 'brands') {
-            cataloguePanel.classList.add('active');
-            catalogueContent.innerHTML = '<div class="catalogue-item" style="text-align: center; padding: 1rem;">Brand catalogue coming soon...</div>';
         } else {
             cataloguePanel.classList.remove('active');
         }

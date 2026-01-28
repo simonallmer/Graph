@@ -444,6 +444,8 @@ a {
     color: var(--color-text-primary);
 }
 
+
+
 /* ========================================
    Catalogue
    ======================================== */
@@ -597,7 +599,7 @@ a {
     position: absolute;
     bottom: 5rem;
     right: 5rem;
-    /* Mirrors catalogue position */
+    /* Standard position */
     width: 300px;
     /* Fixed width */
     max-width: 400px;
@@ -790,15 +792,6 @@ a {
         display: block;
     }
 
-    .catalogue {
-        position: relative;
-        bottom: auto;
-        left: auto;
-        margin: 0 var(--spacing-md) var(--spacing-md);
-        max-height: 40vh;
-        width: auto;
-        min-width: 0;
-    }
 
     .canvas-wrapper {
         margin: 0 var(--spacing-md);
