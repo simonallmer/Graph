@@ -379,7 +379,7 @@ class GraphVisualization {
                 color: '#fbbf24',
                 description: 'Description coming soon',
                 website: 'https://allmermusic.com',
-                products: ['Studio Albums', 'Score Albums']
+                products: ['Studio Albums', 'Score Albums', 'Musical Instruments']
             },
             {
                 id: 'games',
@@ -387,7 +387,7 @@ class GraphVisualization {
                 color: '#10b981',
                 description: 'Description coming soon',
                 website: 'https://allmergames.com',
-                products: ['Tabletop Games', 'Video Games']
+                products: ['Tabletop Games', 'Video Games', 'Toys']
             },
             {
                 id: 'journals',
@@ -585,9 +585,10 @@ class GraphVisualization {
             'Allmer Music': {
                 color: '#fbbf24',
                 items: [
-                    { name: 'M001 American Portrait', link: 'https://simonallmer.com/americanportrait' },
-                    { name: 'M002 Sin [TBA]' },
-                    { name: 'M003 Futory [TBA]' }
+                    { name: 'M001 American Portrait Score', link: 'https://simonallmer.com/americanportrait' },
+                    { name: 'M002 Pentamorph', link: 'https://simonallmer.com/pentamorph' },
+                    { name: 'M003 Sin [TBA]' },
+                    { name: 'M004 Futory Score [TBA]' }
                 ]
             },
             'Allmer Games': {
@@ -606,8 +607,8 @@ class GraphVisualization {
                     { name: 'G011 Mausoleum', link: 'https://simonallmer.com/mausoleum' },
                     { name: 'G012 Colossus', link: 'https://simonallmer.com/colossus' },
                     { name: 'G013 Pharos', link: 'https://simonallmer.com/pharos' },
-                    { name: 'G014 Capital [TBA]' },
-                    { name: 'G015 Equilibrium [TBA]' }
+                    { name: 'G014 Equilibrium [TBA]' },
+                    { name: 'G015 Capital [TBA]' }
                 ]
             },
             'Allmer Journals': {
