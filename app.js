@@ -486,6 +486,14 @@ class GraphVisualization {
                 website: 'https://believegame.com'
             },
             {
+                id: 'casino-camino',
+                name: 'Casino Camino',
+                color: '#b0b0b0',
+                description: 'Coming soon',
+                products: ['Coming soon'],
+                website: 'https://casinocamino.com'
+            },
+            {
                 id: 'chronicle',
                 name: 'Chronicle',
                 color: '#b0b0b0',
@@ -603,13 +611,13 @@ class GraphVisualization {
                     { name: 'G005 Gardens', link: 'https://simonallmer.com/gardens' },
                     { name: 'G006 Temple', link: 'https://simonallmer.com/temple' },
                     { name: 'G007 Believe', link: 'https://simonallmer.com/believe' },
-                    { name: 'G008 Futory Cards Duality', link: 'https://simonallmer.com/futory' },
-                    { name: 'G009 Detective Noname and the Silent Circle', link: 'https://simonallmer.com/noname' },
-                    { name: 'G010 Statue', link: 'https://simonallmer.com/statue' },
-                    { name: 'G011 Mausoleum', link: 'https://simonallmer.com/mausoleum' },
-                    { name: 'G012 Colossus', link: 'https://simonallmer.com/colossus' },
-                    { name: 'G013 Pharos', link: 'https://simonallmer.com/pharos' },
-                    { name: 'G014 Equilibrium [TBA]' },
+                    { name: 'G008 Detective Noname and the Silent Circle', link: 'https://simonallmer.com/noname' },
+                    { name: 'G009 Statue', link: 'https://simonallmer.com/statue' },
+                    { name: 'G010 Mausoleum', link: 'https://simonallmer.com/mausoleum' },
+                    { name: 'G011 Colossus', link: 'https://simonallmer.com/colossus' },
+                    { name: 'G012 Pharos', link: 'https://simonallmer.com/pharos' },
+                    { name: 'G013 Equilibrium [TBA]' },
+                    { name: 'G014 Futory Cards Duality', link: 'https://simonallmer.com/futory' },
                     { name: 'G015 Capital [TBA]' }
                 ]
             },
