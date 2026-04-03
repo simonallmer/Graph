@@ -677,6 +677,19 @@ class GraphVisualization {
         // Window resize
         window.addEventListener('resize', () => this.resize());
 
+        // Header branding toggle on mobile
+        const branding = document.querySelector('.header-branding');
+        if (branding) {
+            branding.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    const header = document.querySelector('.header');
+                    if (header) {
+                        header.classList.add('hidden-mobile');
+                    }
+                }
+            });
+        }
+
         // Reset button
         document.getElementById('resetBtn').addEventListener('click', () => this.resetLayout());
 
@@ -913,11 +926,12 @@ class GraphVisualization {
                 cataloguePanel.classList.remove('active');
             }
 
-            // Toggle header on mobile for clean screen
+            // Hide header on mobile for clean screen
             if (window.innerWidth <= 768) {
                 const header = document.querySelector('.header');
-                if (header) {
-                    header.classList.toggle('hidden-mobile');
+                if (header && !header.classList.contains('hidden-mobile')) {
+                    header.classList.add('hidden-mobile');
+                    console.log('Mobile header hidden by background click');
                 }
             }
         }
