@@ -809,6 +809,13 @@ class GraphVisualization {
         const cataloguePanel = document.getElementById('catalogue');
         const catalogueContent = document.getElementById('catalogue-content');
 
+        // For mobile, we don't show the full catalogue, only specific nodes when clicking
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile && !filterStudio) {
+            cataloguePanel.classList.remove('active');
+            return;
+        }
+
         // Only show catalogue for studios, user said to remove it for brands
         if (mode === 'studios') {
             cataloguePanel.classList.add('active');

@@ -758,7 +758,7 @@ a {
         display: flex;
         flex-direction: column;
         gap: var(--spacing-sm);
-        padding: 12rem var(--spacing-lg) 6rem;
+        padding: 10rem var(--spacing-lg) 8rem;
         width: 100%;
         max-height: 100vh;
         overflow-y: auto;
@@ -791,6 +791,10 @@ a {
 
     .title-main {
         font-size: var(--font-size-2xl);
+    }
+
+    .catalog-title {
+        display: none;
     }
 
     .title-sub {
