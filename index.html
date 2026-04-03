@@ -14,28 +14,24 @@
 
     <div class="container">
         <header class="header">
-            <a href="https://simonallmer.com" class="back-btn glass-panel" target="_top">Back to SA</a>
+            <a href="https://simonallmer.com" class="back-btn glass-panel" target="_top">Back to <span class="logo-font">SA</span></a>
 
             <!-- Header Branding -->
-            <div style="margin-bottom: 3rem; padding-top: 5rem;">
-                <h1
-                    style="font-family: 'Futura', var(--font-family); font-size: 2.5rem; letter-spacing: 0.2em; color: white; font-weight: 300; text-transform: uppercase;">
-                    Simon Allmer Catalog</h1>
+            <div style="margin-bottom: 3rem; padding-top: 5rem; display: flex; flex-direction: column; align-items: center;">
+                <img src="SimonAllmerLogoRightProportionsWhite.png" alt="Simon Allmer" style="height: 40px; width: auto; margin-bottom: 1.5rem;">
+                <h1 style="font-family: 'Futura', var(--font-family); font-size: 1.25rem; letter-spacing: 0.5em; color: white; font-weight: 300; text-transform: uppercase; margin: 0;">
+                    Catalog</h1>
             </div>
 
-            <div class="mission-statement" style="text-align: center;">
-                <p>Committed to creative excellence, Simon Allmer produces story-driven entertainment and consumer
-                    products for a global audience.</p>
-            </div>
 
-            <div class="view-switch glass-panel">
-                <button class="switch-btn active" data-mode="studios">Studios</button>
-                <div class="switch-divider"></div>
-                <button class="switch-btn" data-mode="cities">Cities</button>
-                <div class="switch-divider"></div>
-                <button class="switch-btn" data-mode="brands">Brands</button>
-            </div>
+
         </header>
+        
+        <div class="view-switch glass-panel">
+            <button class="switch-btn active" data-mode="studios">Studios</button>
+            <div class="switch-divider"></div>
+            <button class="switch-btn" data-mode="brands">Brands</button>
+        </div>
 
         <div class="canvas-wrapper">
             <canvas id="networkCanvas"></canvas>

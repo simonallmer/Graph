@@ -1,6 +1,13 @@
 /* ========================================
    CSS Custom Properties - Design System
    ======================================== */
+@font-face {
+    font-family: 'Azonix';
+    src: url('Fonts/Azonix.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
     /* Studio Colors - Vibrant & Futuristic */
     --color-comics: #a855f7;
@@ -120,30 +127,30 @@ a {
     position: relative;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
     z-index: 1;
     padding: 0;
-    /* Ensure no padding */
-    padding-bottom: 3rem;
-    /* Space for footer */
 }
 
 /* ========================================
    Header
    ======================================== */
 .header {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-lg) var(--spacing-xl);
     text-align: center;
-    z-index: 11;
-    /* Header above panels */
+    z-index: 100;
+    pointer-events: none;
     width: 100%;
-    background: linear-gradient(to bottom, #111111 0%, rgba(10, 10, 15, 0.5) 100%);
+}
+
+.header > * {
+    pointer-events: auto;
 }
 
 .back-btn {
@@ -232,12 +239,19 @@ a {
    View Switch
    ======================================== */
 .view-switch {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
     padding: 0.5rem;
     border-radius: 2rem;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 100;
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
 }
 
 .switch-btn {
@@ -273,13 +287,14 @@ a {
    Canvas Wrapper
    ======================================== */
 .canvas-wrapper {
-    flex: 1;
-    position: relative;
-    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
-    border-radius: var(--spacing-md);
     margin: 0;
-    /* Removed margin to fix left gap */
+    z-index: 1;
 }
 
 #networkCanvas {
@@ -662,8 +677,7 @@ a {
     padding: var(--spacing-md) 0;
 }
 
-.studio-details,
-.city-details {
+.studio-details {
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
     line-height: 1.6;
@@ -817,6 +831,11 @@ a {
         background: rgba(0, 0, 0, 0.5);
         margin-top: var(--spacing-md);
     }
+}
+
+.logo-font {
+    font-family: 'Azonix', 'Futura', sans-serif;
+    letter-spacing: 0.1em;
 }
 
 /* ========================================

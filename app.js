@@ -287,33 +287,6 @@ class DetailsPanel {
                 this.link.href = websiteUrl;
                 this.link.classList.remove('hidden');
             }
-        } else if (mode === 'cities') {
-            const events = node.data.events || [];
-            const locations = node.data.locations || [];
-
-            let html = '<div class="city-details">';
-
-            if (events.length > 0) {
-                html += '<div class="detail-section"><h4>Events</h4><ul>';
-                events.forEach(ev => html += `<li>${ev}</li>`);
-                html += '</ul></div>';
-            }
-
-            if (locations.length > 0) {
-                html += '<div class="detail-section"><h4>Locations</h4><ul>';
-                locations.forEach(loc => html += `<li>${loc}</li>`);
-                html += '</ul></div>';
-            }
-
-            const partners = node.data.partners || [];
-            if (partners.length > 0) {
-                html += '<div class="detail-section"><h4>Partners</h4><ul>';
-                partners.forEach(partner => html += `<li>${partner}</li>`);
-                html += '</ul></div>';
-            }
-
-            html += '</div>';
-
             this.content.innerHTML = html;
         }
 
@@ -353,7 +326,7 @@ class GraphVisualization {
         this.isAnimating = true;
 
         this.isAnimating = true;
-        this.mode = 'studios'; // 'studios' or 'cities'
+        this.mode = 'studios'; // 'studios' or 'brands'
 
         // Data Definitions
         this.studiosData = [
@@ -407,68 +380,19 @@ class GraphVisualization {
             }
         ];
 
-        this.citiesData = [
-            {
-                id: 'london',
-                name: 'London',
-                color: '#a0a0a0',
-                events: ['Coming Soon'],
-                locations: ['Coming Soon']
-            },
-            {
-                id: 'frankfurt',
-                name: 'Frankfurt',
-                color: '#a0a0a0',
-                events: ['Coming Soon'],
-                locations: ['Coming Soon']
-            },
-            {
-                id: 'vienna',
-                name: 'Vienna',
-                color: '#a0a0a0',
-                events: [
-                    '<div style="color: #10b981;">' +
-                    '<b><a href="https://spielefest.wien" target="_blank" style="color: inherit;">Spielefest</a></b><br>' +
-                    'Studios: Allmer Games<br>' +
-                    'Next Event: 11.-12. July 2026<br>' +
-                    'Location: <a href="https://www.google.com/maps/search/?api=1&query=Austria+Center+Vienna" target="_blank" style="color: inherit;">Austria Center</a>' +
-                    '</div>'
-                ],
-                locations: [
-                    '<b>Wieden</b> - <a href="https://www.google.com/maps/search/?api=1&query=Kolschitzkygasse+14-18+Vienna" target="_blank" style="color: inherit;">Kolschitzkygasse 14-18</a>',
-                    '<b>Döbling</b> - <a href="https://www.google.com/maps/search/?api=1&query=Krottenbachstraße+140+Vienna" target="_blank" style="color: inherit;">Krottenbachstraße 140</a>'
-                ],
-                partners: [
-                    '<a href="https://www.paradice.wien" target="_blank" style="color: #10b981; font-weight: bold;">Paradice</a><br><span style="font-size: 0.9em; opacity: 0.8;">Gaming Events</span>',
-                    '<a href="https://www.zuckerlwerkstatt.at" target="_blank" style="color: #ec4899; font-weight: bold;">Zuckerlwerkstatt</a><br><span style="font-size: 0.9em; opacity: 0.8;">Candy Production</span>'
-                ]
-            },
-            {
-                id: 'milan',
-                name: 'Milan',
-                color: '#a0a0a0',
-                events: ['Coming Soon'],
-                locations: ['Coming Soon']
-            },
-            {
-                id: 'madrid',
-                name: 'Madrid',
-                color: '#a0a0a0',
-                events: ['Coming Soon'],
-                locations: ['Coming Soon']
-            },
-            {
-                id: 'paris',
-                name: 'Paris',
-                color: '#a0a0a0',
-                events: ['Coming Soon'],
-                locations: ['Coming Soon']
-            }
-        ];
+        this.citiesData = []; // Removed
 
 
 
         this.brandsData = [
+            {
+                id: 'american-chronicle',
+                name: 'American Chronicle',
+                color: '#b0b0b0',
+                description: 'Coming soon',
+                products: ['American Chronicle'],
+                website: 'https://simonallmer.com/americanchronicle'
+            },
             {
                 id: 'american-portrait',
                 name: 'American Portrait',
@@ -498,7 +422,7 @@ class GraphVisualization {
                 name: 'Chronicle',
                 color: '#b0b0b0',
                 description: 'Coming soon',
-                products: ['Coming soon'],
+                products: ['Chronicle: Years of Change'],
                 website: 'https://simonallmer.com/chronicle'
             },
             {
@@ -616,9 +540,22 @@ class GraphVisualization {
                     { name: 'G010 Mausoleum', link: 'https://simonallmer.com/mausoleum' },
                     { name: 'G011 Colossus', link: 'https://simonallmer.com/colossus' },
                     { name: 'G012 Pharos', link: 'https://simonallmer.com/pharos' },
-                    { name: 'G013 Equilibrium [TBA]' },
-                    { name: 'G014 Futory Cards Duality', link: 'https://simonallmer.com/futory' },
-                    { name: 'G015 Capital [TBA]' }
+                    { name: 'G013 Frontier', link: 'https://simonallmer.com/camino' },
+                    { name: 'G014 Fortuna', link: 'https://simonallmer.com/camino' },
+                    { name: 'G015 Ricochet', link: 'https://simonallmer.com/camino' },
+                    { name: 'G016 Believe Objects', link: 'https://simonallmer.com/believe' },
+                    { name: 'G017 Colosseum [TBA]' },
+                    { name: 'G018 Great Wall [TBA]' },
+                    { name: 'G019 Tower [TBA]' },
+                    { name: 'G020 Citadel [TBA]' },
+                    { name: 'G021 Cathedral [TBA]' },
+                    { name: 'G022 Palace [TBA]' },
+                    { name: 'G023 Skyscraper', link: 'https://simonallmer.com/skyscraper' },
+                    { name: 'G024 Futory Cards Duality', link: 'https://simonallmer.com/futory' },
+                    { name: 'G025 Capital [TBA]' },
+                    { name: 'G026 Equilibrium [TBA]' },
+                    { name: 'G027 Silk Road [TBA]' },
+                    { name: 'G028 Futory Cards Trinity [TBA]' }
                 ]
             },
             'Allmer Journals': {
@@ -626,9 +563,10 @@ class GraphVisualization {
                 items: [
                     { name: 'J001 Simon Allmer World', link: 'https://simonallmer.com/world' },
                     { name: 'J002 Society Review', link: 'https://simonallmer.com/societyreview' },
-                    { name: 'J003 Chronicle', link: 'https://simonallmer.com/chronicle' },
+                    { name: 'J003 Chronicle: Years of Change', link: 'https://simonallmer.com/chronicle' },
                     { name: 'J004 ACRONYM', link: 'https://simonallmer.com/acronym' },
-                    { name: 'J005 Cosmographia', link: 'https://simonallmer.com/cosmographia' }
+                    { name: 'J005 Cosmographia', link: 'https://simonallmer.com/cosmographia' },
+                    { name: 'J006 American Chronicle', link: 'https://simonallmer.com/americanchronicle' }
                 ]
             },
             'Allmer Snacks': {
@@ -717,6 +655,25 @@ class GraphVisualization {
         this.canvas.addEventListener('mouseleave', () => this.handleMouseLeave());
         this.canvas.addEventListener('click', (e) => this.handleClick(e));
 
+        // Window keyboard events
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault(); // Prevent page scroll
+                const newMode = this.mode === 'studios' ? 'brands' : 'studios';
+                this.switchMode(newMode);
+                
+                // Update UI buttons
+                const modeBtns = document.querySelectorAll('.switch-btn');
+                modeBtns.forEach(btn => {
+                    if (btn.dataset.mode === newMode) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        });
+
         // Window resize
         window.addEventListener('resize', () => this.resize());
 
@@ -742,9 +699,7 @@ class GraphVisualization {
         this.mode = newMode;
         this.popup.hide();
 
-        const targetData = newMode === 'studios' ? this.studiosData :
-            newMode === 'cities' ? this.citiesData :
-                this.brandsData;
+        const targetData = newMode === 'studios' ? this.studiosData : this.brandsData;
 
         // Use transition graph for all changes to ensure smooth morphing
         this.transitionGraph(targetData);
