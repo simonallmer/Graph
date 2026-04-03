@@ -637,8 +637,8 @@ class GraphVisualization {
             }
         }
 
-        // Update info panel
-
+        // Update mobile view list
+        this.updateMobileList();
     }
 
     resize() {
@@ -706,6 +706,34 @@ class GraphVisualization {
 
         // Update UI panels
         this.updateCatalogue(newMode);
+        this.updateMobileList();
+    }
+
+    updateMobileList() {
+        const mobileView = document.getElementById('mobile-list-view');
+        if (!mobileView) return;
+        
+        mobileView.innerHTML = '';
+        
+        const targetData = this.mode === 'studios' ? this.studiosData : this.brandsData;
+        
+        targetData.forEach(data => {
+            const item = document.createElement('div');
+            item.className = 'mobile-list-item';
+            item.textContent = data.name;
+            item.style.borderLeft = `4px solid ${data.color}`;
+            
+            item.onclick = () => {
+                const mockNode = {
+                    name: data.name,
+                    color: data.color,
+                    data: data
+                };
+                this.popup.show(mockNode, this.mode);
+            };
+            
+            mobileView.appendChild(item);
+        });
     }
 
     transitionGraph(targetData) {
