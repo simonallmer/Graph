@@ -637,8 +637,8 @@ class GraphVisualization {
             }
         }
 
-        // Update mobile view list
-        this.updateMobileList();
+        // Update info panel
+
     }
 
     resize() {
@@ -706,34 +706,6 @@ class GraphVisualization {
 
         // Update UI panels
         this.updateCatalogue(newMode);
-        this.updateMobileList();
-    }
-
-    updateMobileList() {
-        const mobileView = document.getElementById('mobile-list-view');
-        if (!mobileView) return;
-        
-        mobileView.innerHTML = '';
-        
-        const targetData = this.mode === 'studios' ? this.studiosData : this.brandsData;
-        
-        targetData.forEach(data => {
-            const item = document.createElement('div');
-            item.className = 'mobile-list-item';
-            item.textContent = data.name;
-            item.style.borderLeft = `4px solid ${data.color}`;
-            
-            item.onclick = () => {
-                const mockNode = {
-                    name: data.name,
-                    color: data.color,
-                    data: data
-                };
-                this.popup.show(mockNode, this.mode);
-            };
-            
-            mobileView.appendChild(item);
-        });
     }
 
     transitionGraph(targetData) {
@@ -808,13 +780,6 @@ class GraphVisualization {
     updateCatalogue(mode, filterStudio = null) {
         const cataloguePanel = document.getElementById('catalogue');
         const catalogueContent = document.getElementById('catalogue-content');
-
-        // For mobile, we don't show the full catalogue, only specific nodes when clicking
-        const isMobile = window.innerWidth <= 768;
-        if (isMobile && !filterStudio) {
-            cataloguePanel.classList.remove('active');
-            return;
-        }
 
         // Only show catalogue for studios, user said to remove it for brands
         if (mode === 'studios') {
@@ -942,9 +907,10 @@ class GraphVisualization {
             }
         } else {
             this.popup.hide();
-            // Reset catalogue filter when clicking empty space
-            if (this.mode === 'studios') {
-                this.updateCatalogue(this.mode);
+            // Hide catalogue when clicking empty space to ensure clean view
+            const cataloguePanel = document.getElementById('catalogue');
+            if (cataloguePanel) {
+                cataloguePanel.classList.remove('active');
             }
         }
     }
