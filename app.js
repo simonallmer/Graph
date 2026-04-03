@@ -683,9 +683,10 @@ class GraphVisualization {
             branding.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
                     const header = document.querySelector('.header');
-                    if (header) {
-                        header.classList.add('hidden-mobile');
-                    }
+                    const switcher = document.querySelector('.view-switch');
+                    
+                    if (header) header.classList.toggle('hidden-mobile');
+                    if (switcher) switcher.classList.toggle('hidden-mobile');
                 }
             });
         }
@@ -926,13 +927,13 @@ class GraphVisualization {
                 cataloguePanel.classList.remove('active');
             }
 
-            // Hide header on mobile for clean screen
+            // Toggle Zen mode on mobile (hide/show header and switcher)
             if (window.innerWidth <= 768) {
                 const header = document.querySelector('.header');
-                if (header && !header.classList.contains('hidden-mobile')) {
-                    header.classList.add('hidden-mobile');
-                    console.log('Mobile header hidden by background click');
-                }
+                const switcher = document.querySelector('.view-switch');
+                
+                if (header) header.classList.toggle('hidden-mobile');
+                if (switcher) switcher.classList.toggle('hidden-mobile');
             }
         }
     }

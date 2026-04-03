@@ -253,6 +253,7 @@ a {
     z-index: 100;
     backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
+    transition: opacity var(--transition-slow);
 }
 
 .switch-btn {
@@ -782,7 +783,8 @@ a {
         padding: var(--spacing-md) var(--spacing-sm);
     }
 
-    .header.hidden-mobile {
+    .header.hidden-mobile,
+    .view-switch.hidden-mobile {
         opacity: 0;
         pointer-events: none;
     }
