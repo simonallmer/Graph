@@ -147,6 +147,7 @@ a {
     z-index: 100;
     pointer-events: none;
     width: 100%;
+    transition: opacity var(--transition-slow);
 }
 
 .header > * {
@@ -779,6 +780,11 @@ a {
     /* Compact Header for Mobile */
     .header {
         padding: var(--spacing-md) var(--spacing-sm);
+    }
+
+    .header.hidden-mobile {
+        opacity: 0;
+        pointer-events: none;
     }
 
     .logo-text {

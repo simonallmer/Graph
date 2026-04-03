@@ -912,6 +912,14 @@ class GraphVisualization {
             if (cataloguePanel) {
                 cataloguePanel.classList.remove('active');
             }
+
+            // Toggle header on mobile for clean screen
+            if (window.innerWidth <= 768) {
+                const header = document.querySelector('.header');
+                if (header) {
+                    header.classList.toggle('hidden-mobile');
+                }
+            }
         }
     }
 
