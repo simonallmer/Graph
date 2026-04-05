@@ -540,7 +540,7 @@ class GraphVisualization {
                     { name: 'G010 Mausoleum', link: 'https://simonallmer.com/mausoleum' },
                     { name: 'G011 Colossus', link: 'https://simonallmer.com/colossus' },
                     { name: 'G012 Pharos', link: 'https://simonallmer.com/pharos' },
-                    { name: 'G013 Frontier', link: 'https://simonallmer.com/camino' },
+                    { name: 'G013 American Playing Cards', link: 'https://simonallmer.com/camino' },
                     { name: 'G014 Fortuna', link: 'https://simonallmer.com/camino' },
                     { name: 'G015 Ricochet', link: 'https://simonallmer.com/camino' },
                     { name: 'G016 Believe Objects', link: 'https://simonallmer.com/believe' },
