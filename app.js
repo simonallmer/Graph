@@ -265,7 +265,13 @@ class DetailsPanel {
             // Products
             if (products.length > 0) {
                 html += '<div class="detail-section"><h4>Products</h4><ul>';
-                products.forEach(prod => html += `<li>${prod}</li>`);
+                products.forEach(prod => {
+                    if (typeof prod === 'object' && prod.link) {
+                        html += `<li><a href="${prod.link}" target="_blank" style="color:inherit;">${prod.name}</a></li>`;
+                    } else {
+                        html += `<li>${typeof prod === 'object' ? prod.name : prod}</li>`;
+                    }
+                });
                 html += '</ul></div>';
             }
 
@@ -386,20 +392,12 @@ class GraphVisualization {
 
         this.brandsData = [
             {
-                id: 'american-chronicle',
-                name: 'American Chronicle',
-                color: '#b0b0b0',
-                description: 'Coming soon',
-                products: ['American Chronicle'],
-                website: 'https://simonallmer.com/americanchronicle'
-            },
-            {
                 id: 'american-portrait',
                 name: 'American Portrait',
                 color: '#b0b0b0',
                 description: 'Coming soon',
                 products: ['Coming soon'],
-                website: 'https://simonallmer.com/americanportrait'
+                website: 'https://aportrait.org'
             },
             {
                 id: 'believe',
@@ -414,7 +412,7 @@ class GraphVisualization {
                 name: 'Casino Camino',
                 color: '#b0b0b0',
                 description: 'Coming soon',
-                products: ['Coming soon'],
+                products: [{ name: 'American Playing Cards', link: 'https://simonallmer.com/americanplayingcards' }],
                 website: 'https://casinocamino.com'
             },
             {
@@ -422,7 +420,7 @@ class GraphVisualization {
                 name: 'Chronicle',
                 color: '#b0b0b0',
                 description: 'Coming soon',
-                products: ['Chronicle: Years of Change'],
+                products: ['Chronicle: Years of Change', 'American Chronicle'],
                 website: 'https://simonallmer.com/chronicle'
             },
             {
@@ -480,6 +478,14 @@ class GraphVisualization {
                 description: 'Coming soon',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/metropole'
+            },
+            {
+                id: 'scaretales',
+                name: 'Scaretales',
+                color: '#b0b0b0',
+                description: 'Coming soon',
+                products: ['Coming soon'],
+                website: 'https://scaretales.com'
             },
             {
                 id: 'seven-wonders',
@@ -540,7 +546,7 @@ class GraphVisualization {
                     { name: 'G010 Mausoleum', link: 'https://simonallmer.com/mausoleum' },
                     { name: 'G011 Colossus', link: 'https://simonallmer.com/colossus' },
                     { name: 'G012 Pharos', link: 'https://simonallmer.com/pharos' },
-                    { name: 'G013 American Playing Cards', link: 'https://simonallmer.com/camino' },
+                    { name: 'G013 American Playing Cards', link: 'https://simonallmer.com/americanplayingcards' },
                     { name: 'G014 Fortuna', link: 'https://simonallmer.com/camino' },
                     { name: 'G015 Ricochet', link: 'https://simonallmer.com/camino' },
                     { name: 'G016 Believe Objects', link: 'https://simonallmer.com/believe' },
