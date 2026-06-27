@@ -426,8 +426,8 @@ class GraphVisualization {
                 color: '#b0b0b0',
                 description: 'The definitive record of human history',
                 products: [
-                    { name: 'Chronicle: Years of Change', link: 'https://simonallmer.com/chronicle', color: '#8b4513' },
-                    { name: 'American Chronicle', link: 'https://simonallmer.com/americanchronicle', color: '#8b4513' }
+                    { name: 'Chronicle: Years of Change', link: 'https://simonallmer.com/chronicle', color: '#d2a679' },
+                    { name: 'American Chronicle', link: 'https://simonallmer.com/americanchronicle', color: '#d2a679' }
                 ],
                 website: 'https://simonallmer.com/chronicle'
             },
@@ -462,7 +462,9 @@ class GraphVisualization {
                 name: 'Elements',
                 color: '#b0b0b0',
                 description: 'The samurai card game',
-                products: ['Coming soon'],
+                products: [
+                    { name: 'Elements', link: 'https://simonallmer.com/elements', color: '#10b981' }
+                ],
                 website: 'https://simonallmer.com/elements'
             },
             {
@@ -471,9 +473,10 @@ class GraphVisualization {
                 color: '#b0b0b0',
                 description: 'A universe beyond imagination',
                 products: [
+                    { name: 'Futory: Dragon Kingdom', color: '#f87171' },
+                    { name: 'Futory: Dragon Kingdom', color: '#3b82f6' },
                     { name: 'Futory Cards Unity', link: 'https://simonallmer.com/futory', color: '#10b981' },
                     { name: 'Futory Cards Duality', link: 'https://simonallmer.com/futory', color: '#10b981' },
-                    { name: 'Futory: Dragon Kingdom', color: '#ef4444' },
                     { name: 'Futory Cards Trinity', color: '#10b981' }
                 ],
                 website: 'https://futory.com'
