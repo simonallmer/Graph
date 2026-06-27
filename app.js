@@ -266,10 +266,11 @@ class DetailsPanel {
             if (products.length > 0) {
                 html += '<div class="detail-section"><h4>Products</h4><ul>';
                 products.forEach(prod => {
+                    const prodColor = (typeof prod === 'object' && prod.color) ? ` style="color:${prod.color}"` : '';
                     if (typeof prod === 'object' && prod.link) {
-                        html += `<li><a href="${prod.link}" target="_blank" style="color:inherit;">${prod.name}</a></li>`;
+                        html += `<li${prodColor}><a href="${prod.link}" target="_blank" style="color:inherit;">${prod.name}</a></li>`;
                     } else {
-                        html += `<li>${typeof prod === 'object' ? prod.name : prod}</li>`;
+                        html += `<li${prodColor}>${typeof prod === 'object' ? prod.name : prod}</li>`;
                     }
                 });
                 html += '</ul></div>';
@@ -395,7 +396,7 @@ class GraphVisualization {
                 id: 'american-portrait',
                 name: 'American Portrait',
                 color: '#b0b0b0',
-                description: 'Coming soon',
+                description: "Painting man's eternal struggle for freedom",
                 products: ['Coming soon'],
                 website: 'https://aportrait.org'
             },
@@ -403,24 +404,31 @@ class GraphVisualization {
                 id: 'believe',
                 name: 'Believe',
                 color: '#b0b0b0',
-                description: 'Coming soon',
-                products: ['Coming soon'],
+                description: 'Never lie. Unless you can pull it off',
+                products: [
+                    { name: 'Believe', link: 'https://simonallmer.com/believe', color: '#10b981' }
+                ],
                 website: 'https://believegame.com'
             },
             {
                 id: 'casino-camino',
                 name: 'Casino Camino',
                 color: '#b0b0b0',
-                description: 'Coming soon',
-                products: [{ name: 'American Playing Cards', link: 'https://simonallmer.com/americanplayingcards' }],
+                description: 'Follow your vices',
+                products: [
+                    { name: 'American Playing Cards', link: 'https://simonallmer.com/americanplayingcards', color: '#10b981' }
+                ],
                 website: 'https://casinocamino.com'
             },
             {
                 id: 'chronicle',
                 name: 'Chronicle',
                 color: '#b0b0b0',
-                description: 'Coming soon',
-                products: ['Chronicle: Years of Change', 'American Chronicle'],
+                description: 'The definitive record of human history',
+                products: [
+                    { name: 'Chronicle: Years of Change', link: 'https://simonallmer.com/chronicle', color: '#8b4513' },
+                    { name: 'American Chronicle', link: 'https://simonallmer.com/americanchronicle', color: '#8b4513' }
+                ],
                 website: 'https://simonallmer.com/chronicle'
             },
             {
@@ -435,7 +443,7 @@ class GraphVisualization {
                 id: 'cosmographia',
                 name: 'Cosmographia',
                 color: '#b0b0b0',
-                description: 'Coming soon',
+                description: 'The universal lexicon',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/cosmographia'
             },
@@ -443,15 +451,17 @@ class GraphVisualization {
                 id: 'detective-noname',
                 name: 'Detective Noname',
                 color: '#b0b0b0',
-                description: 'Coming soon',
-                products: ['Coming soon'],
+                description: 'There is a key to every secret',
+                products: [
+                    { name: 'Detective Noname and the Silent Circle', link: 'https://simonallmer.com/noname', color: '#10b981' }
+                ],
                 website: 'https://simonallmer.com/detectivenoname'
             },
             {
                 id: 'elements',
                 name: 'Elements',
                 color: '#b0b0b0',
-                description: 'Coming soon',
+                description: 'The samurai card game',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/elements'
             },
@@ -459,15 +469,20 @@ class GraphVisualization {
                 id: 'futory',
                 name: 'Futory',
                 color: '#b0b0b0',
-                description: 'Coming soon',
-                products: ['Coming soon'],
+                description: 'A universe beyond imagination',
+                products: [
+                    { name: 'Futory Cards Unity', link: 'https://simonallmer.com/futory', color: '#10b981' },
+                    { name: 'Futory Cards Duality', link: 'https://simonallmer.com/futory', color: '#10b981' },
+                    { name: 'Futory: Dragon Kingdom', color: '#ef4444' },
+                    { name: 'Futory Cards Trinity', color: '#10b981' }
+                ],
                 website: 'https://futory.com'
             },
             {
                 id: 'lunyra',
                 name: 'Lunyra',
                 color: '#b0b0b0',
-                description: 'Coming soon',
+                description: 'The Silver City will open its gates soon',
                 products: ['Coming soon'],
                 website: 'https://lunyra.com'
             },
@@ -475,7 +490,7 @@ class GraphVisualization {
                 id: 'metropole',
                 name: 'Metropole',
                 color: '#b0b0b0',
-                description: 'Coming soon',
+                description: 'Taste Art Deco',
                 products: ['Coming soon'],
                 website: 'https://simonallmer.com/metropole'
             },
@@ -483,7 +498,7 @@ class GraphVisualization {
                 id: 'scaretales',
                 name: 'Scaretales',
                 color: '#b0b0b0',
-                description: 'Coming soon',
+                description: 'Some fates are worse than death',
                 products: ['Coming soon'],
                 website: 'https://scaretales.com'
             },
@@ -491,15 +506,30 @@ class GraphVisualization {
                 id: 'seven-wonders',
                 name: 'Seven Wonders',
                 color: '#b0b0b0',
-                description: 'Coming soon',
-                products: ['Coming soon'],
+                description: 'Wonder through the ages',
+                products: [
+                    { name: 'Pyramid', link: 'https://simonallmer.com/pyramid', color: '#10b981' },
+                    { name: 'Gardens', link: 'https://simonallmer.com/gardens', color: '#10b981' },
+                    { name: 'Temple', link: 'https://simonallmer.com/temple', color: '#10b981' },
+                    { name: 'Statue', link: 'https://simonallmer.com/statue', color: '#10b981' },
+                    { name: 'Mausoleum', link: 'https://simonallmer.com/mausoleum', color: '#10b981' },
+                    { name: 'Colossus', link: 'https://simonallmer.com/colossus', color: '#10b981' },
+                    { name: 'Pharos', link: 'https://simonallmer.com/pharos', color: '#10b981' },
+                    { name: 'Colosseum', link: 'https://simonallmer.com/colosseum', color: '#10b981' },
+                    { name: 'Great Wall', link: 'https://simonallmer.com/greatwall', color: '#10b981' },
+                    { name: 'Library', color: '#10b981' },
+                    { name: 'Tower', link: 'https://simonallmer.com/tower', color: '#10b981' },
+                    { name: 'Cathedral', color: '#10b981' },
+                    { name: 'Palace', color: '#10b981' },
+                    { name: 'Skyscraper', link: 'https://simonallmer.com/skyscraper', color: '#10b981' }
+                ],
                 website: 'https://sevenwondersgames.com'
             },
             {
                 id: 'society-review',
                 name: 'Society Review',
                 color: '#b0b0b0',
-                description: 'Coming soon',
+                description: 'Read the world today',
                 products: ['Coming soon'],
                 website: 'https://societyreview.org'
             }
