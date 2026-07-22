@@ -559,7 +559,7 @@ class GraphVisualization {
                 color: '#fbbf24',
                 items: [
                     { name: 'M001 American Portrait Score', link: 'https://simonallmer.com/americanportrait' },
-                    { name: 'M002 Pentamorph', link: 'https://simonallmer.com/instruments' },
+                    { name: 'M002 Soul Town [TBA]' },
                     { name: 'M003 Sin [TBA]' },
                     { name: 'M004 Futory Score [TBA]' }
                 ]
