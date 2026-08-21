@@ -468,6 +468,17 @@ body.dev .valve.is-dev .valve-label::after {
     margin-bottom: 2.4rem;
 }
 
+/* The answers given, echoed back under the count. */
+.suggest-said {
+    margin-top: -1.9rem;
+    margin-bottom: 2.4rem;
+    font-size: clamp(0.6rem, 1.1vw, 0.72rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--vc);
+    opacity: 0.62;
+}
+
 .game-list {
     display: flex;
     flex-direction: column;
