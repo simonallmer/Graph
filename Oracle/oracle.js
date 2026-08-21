@@ -28,8 +28,12 @@
    ============================================================ */
 
 // Studio hues — worn by every floor below their branch.
+const COMICS_COLOR = '#ef4444';
+const FILMS_COLOR = '#3b82f6';
+const MUSIC_COLOR = '#fbbf24';
 const GAMES_COLOR = '#10b981';
 const JOURNALS_COLOR = '#b8763a';
+const SNACKS_COLOR = '#ec4899';
 
 const ORACLE = {
     start: 'medium',
@@ -45,9 +49,87 @@ const ORACLE = {
         },
 
         // ---- The six studios ----
-        comics: studio('Comics', '#ef4444', 'Ink, panel, and page'),
-        films: studio('Films', '#3b82f6', 'Light in the dark'),
-        music: studio('Music', '#fbbf24', 'Sound and score'),
+        comics: {
+            label: 'Comics',
+            color: COMICS_COLOR,
+            hint: 'Ink, panel, and page',
+            eyebrow: 'By Genre',
+            prompt: 'Which <em>genre</em> calls you?',
+            sub: 'Two worlds are being drawn.',
+            options: [
+                {
+                    label: 'Fantasy',
+                    hint: 'The Art of Futory',
+                    verdict: {
+                        title: 'The Art of Futory',
+                        body: 'A universe drawn before it is told.',
+                        note: 'Ready yourself — Futory: Dragon Kingdom arrives next year.',
+                        links: [['The Art of Futory', 'https://simonallmer.com/artoffutory']],
+                    },
+                },
+                {
+                    label: 'Historical Drama',
+                    hint: 'American Portrait',
+                    verdict: {
+                        title: 'American Portrait',
+                        body: 'A life told whole, in ink — the good and the bad, unflinching.',
+                        note: 'In production. Patience: what is drawn slowly is drawn to last.',
+                        links: [['American Portrait', 'https://simonallmer.com/americanportrait']],
+                    },
+                },
+            ],
+        },
+        films: {
+            label: 'Films',
+            color: FILMS_COLOR,
+            hint: 'Light in the dark',
+            verdict: {
+                title: 'American Portrait',
+                body: 'Simon is at work on it now. The page holds an early look.',
+                note: 'Patience is its own devotion. What is made slowly is made to last.',
+                links: [['Early look', 'https://simonallmer.com/americanportrait']],
+            },
+        },
+        music: {
+            label: 'Music',
+            color: MUSIC_COLOR,
+            hint: 'Sound and score',
+            eyebrow: 'By Ear',
+            prompt: 'What do you wish to <em>hear</em>?',
+            sub: 'Every recording lives on one page. The Oracle will name what to seek there.',
+            options: [
+                {
+                    label: 'Pop',
+                    hint: 'Simon',
+                    verdict: {
+                        title: 'Simon',
+                        body: 'Pop, under his own name.',
+                        note: 'Seek that name on the Audio page.',
+                        links: [['Audio', 'https://simonallmer.com/audio']],
+                    },
+                },
+                {
+                    label: 'Soul',
+                    hint: 'Soul Town',
+                    verdict: {
+                        title: 'Soul Town',
+                        body: 'Soul, and the town it comes from.',
+                        note: 'Seek that name on the Audio page.',
+                        links: [['Audio', 'https://simonallmer.com/audio']],
+                    },
+                },
+                {
+                    label: 'Score',
+                    hint: 'American Portrait',
+                    verdict: {
+                        title: 'American Portrait',
+                        body: 'The score written for the American epic.',
+                        note: 'Seek that name on the Audio page.',
+                        links: [['Audio', 'https://simonallmer.com/audio']],
+                    },
+                },
+            ],
+        },
         games: {
             label: 'Games',
             color: GAMES_COLOR,
@@ -90,20 +172,19 @@ const ORACLE = {
             sub: 'Choose the subject and the Oracle will hand you the volume.',
             question: 'topic',
         },
-        snacks: studio('Snacks', '#ec4899', 'Taste as craft'),
+        snacks: {
+            label: 'Snacks',
+            color: SNACKS_COLOR,
+            hint: 'Taste as craft',
+            verdict: {
+                title: 'Metropole',
+                body: 'One snack stands on the shelf today. Taste Art Deco.',
+                note: 'Simon is making the next ones.',
+                links: [['Taste it', 'https://simonallmer.com/metropole']],
+            },
+        },
     },
 };
-
-function studio(label, color, hint) {
-    return {
-        label,
-        color,
-        hint,
-        comingSoon: true,
-        leafTitle: label,
-        leafBody: 'The Oracle is still learning to question this medium. Its functional attributes will soon guide you here.',
-    };
-}
 
 // ============================================================
 //  The Games — drawn from the catalog.
@@ -248,7 +329,9 @@ const JOURNALS = [
     journal('Simon Allmer World', 'world', 'Simon Allmer', 'Photography', 2020),
     journal('Society Review', 'societyreview', 'Society Review', 'Current Affairs', 2021),
     journal('Chronicle: Years of Change', 'chronicle', 'Chronicle', 'History', 2023, 'World'),
-    journal('ACRONYM', 'acronym', 'Detective Noname', 'Conspiracy', 2025),
+    // ACRONYM (Conspiracy, 2025) is held back until it is polished.
+    // Restore this line and the topic returns on its own.
+    // journal('ACRONYM', 'acronym', 'Detective Noname', 'Conspiracy', 2025),
     journal('Cosmographia', 'cosmographia', 'Cosmographia', 'Lexicon', 2026),
     journal('American Chronicle', 'americanchronicle', 'Chronicle', 'History', 2026, 'American'),
 ];
@@ -448,6 +531,12 @@ class Oracle {
         const idx = this.floors.length; // the index this floor will occupy
         let el, kind;
         if (node.choices) { el = this.buildChoiceLevel(node, idx); kind = 'choice'; }
+        else if (node.verdict) { el = this.buildVerdictLevel(node.verdict, node.color); kind = 'leaf'; }
+        else if (node.options) {
+            el = this.buildQuestionLevel(node, idx, option =>
+                this.makeVerdictFloor(option.verdict, node.color));
+            kind = 'choice';
+        }
         else if (node.question === 'players') { el = this.buildPlayersLevel(node, idx); kind = 'players'; }
         else if (node.question === 'topic') {
             const question = nextJournalQuestion({});
@@ -481,6 +570,10 @@ class Oracle {
 
     // Journals descend by the same rule as games: ask what still
     // separates the volumes, and speak the moment one stands alone.
+    makeVerdictFloor(verdict, color) {
+        return { el: this.buildVerdictLevel(verdict, color), node: { color }, kind: 'leaf', chosenIndex: null, accent: color };
+    }
+
     makeJournalsFloor(query) {
         const question = nextJournalQuestion(query);
         if (!question) {
@@ -610,6 +703,26 @@ class Oracle {
             );
             valves.appendChild(valve);
         });
+        return level;
+    }
+
+    // A leaf that actually answers: a name, a word on it, and the door.
+    buildVerdictLevel(verdict, color) {
+        const level = document.createElement('section');
+        level.className = 'level';
+        level.style.setProperty('--vc', color || 'var(--champagne)');
+        level.innerHTML = `
+            <div class="leaf">
+                <div class="leaf-medallion" style="--vc:${color}"><span class="dot"></span></div>
+                <div class="level-eyebrow">The Oracle Speaks</div>
+                <div class="leaf-title">${verdict.title}</div>
+                <div class="leaf-body">${verdict.body}</div>
+                ${verdict.note ? `<div class="leaf-note">${verdict.note}</div>` : ''}
+                <div class="leaf-links">
+                    ${verdict.links.map(([label, href]) => extLink(label, href)).join('')}
+                </div>
+            </div>
+        `;
         return level;
     }
 

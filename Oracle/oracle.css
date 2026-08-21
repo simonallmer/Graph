@@ -620,6 +620,38 @@ body.dev .valve.is-dev .valve-label::after {
     margin-bottom: 2.2rem;
 }
 
+/* The Oracle's closing word — smaller than the body, and patient. */
+.leaf-note {
+    font-family: var(--sans);
+    font-size: clamp(0.62rem, 1.1vw, 0.72rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    line-height: 1.9;
+    color: var(--vc, var(--champagne));
+    opacity: 0.7;
+    max-width: 26rem;
+    margin: -1rem auto 2.1rem;
+}
+
+.leaf-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.8rem;
+    flex-wrap: wrap;
+}
+
+.leaf-links .ext {
+    font-size: 0.7rem;
+    letter-spacing: 0.26em;
+    padding: 0.7rem 1.4rem;
+    border: 1px solid var(--champagne-soft);
+    border-radius: 2rem;
+}
+
+.leaf-links .ext:hover {
+    border-color: var(--vc, var(--champagne));
+}
+
 .leaf-tag {
     display: inline-block;
     font-family: var(--sans);
