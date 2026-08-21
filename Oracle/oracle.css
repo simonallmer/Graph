@@ -814,30 +814,22 @@ body.dev .valve.is-dev .valve-label::after {
     right: 2rem;
     top: 1.3rem;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.4rem;
+    align-items: center;
     cursor: pointer;
-    opacity: 0.85;
-    transition: opacity 0.3s;
+    opacity: 0.72;
+    transition: opacity 0.5s var(--ease-silk), transform 0.5s var(--ease-silk);
 }
 
 .brand:hover {
     opacity: 1;
+    transform: rotate(15deg);
 }
 
+/* The Center mark — square, so it is sized by its side, not its height. */
 .brand-mark {
-    height: 22px;
-    width: auto;
-}
-
-.brand-word {
-    font-family: var(--sans);
-    font-size: 0.62rem;
-    letter-spacing: 0.5em;
-    text-transform: uppercase;
-    color: var(--smoke);
-    padding-left: 0.5em;
+    width: clamp(38px, 3.4vw, 48px);
+    height: auto;
+    display: block;
 }
 
 .dev-toggle {
@@ -935,8 +927,8 @@ body.dev .dev-toggle {
         display: none;
     }
 
-    .brand-word {
-        display: none;
+    .brand-mark {
+        width: 34px;
     }
 
     .game {

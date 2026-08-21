@@ -502,7 +502,6 @@ class Oracle {
 
         this.elUp.addEventListener('click', () => this.up());
         this.elDown.addEventListener('click', () => this.down());
-        document.getElementById('brandReset').addEventListener('click', () => this.reset());
         document.getElementById('devToggle').addEventListener('click', () =>
             document.body.classList.toggle('dev')
         );
