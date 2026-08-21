@@ -5,7 +5,7 @@
 
 @font-face {
     font-family: 'Azonix';
-    src: url('../Fonts/Azonix.otf') format('opentype');
+    src: url('assets/Azonix.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
