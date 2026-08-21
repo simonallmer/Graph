@@ -591,10 +591,12 @@ class GraphVisualization {
                     { name: 'G022 Palace', link: 'https://simonallmer.com/palace' },
                     { name: 'G023 Skyscraper', link: 'https://simonallmer.com/skyscraper' },
                     { name: 'G024 Futory Cards Duality', link: 'https://simonallmer.com/futory' },
-                    { name: 'G025 Capital [TBA]' },
-                    { name: 'G026 Equilibrium [TBA]' },
-                    { name: 'G027 Silk Road [TBA]' },
-                    { name: 'G028 Futory Cards Trinity [TBA]' }
+                    { name: 'G025 Beat Race', link: 'https://simonallmer.com/beatrace' },
+                    { name: 'G026 Crosslink', link: 'https://simonallmer.com/crosslink' },
+                    { name: 'G027 Capital [TBA]' },
+                    { name: 'G028 Equilibrium [TBA]' },
+                    { name: 'G029 Silk Road [TBA]' },
+                    { name: 'G030 Futory Cards Trinity [TBA]' }
                 ]
             },
             'Allmer Journals': {
