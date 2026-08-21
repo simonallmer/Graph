@@ -1,0 +1,930 @@
+/* ============================================================
+   THE ORACLE — an intuitive recommender for the Allmer catalog
+   Design language: onyx, champagne hairlines, crystal, restraint.
+   ============================================================ */
+
+@font-face {
+    font-family: 'Azonix';
+    src: url('../Fonts/Azonix.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    /* Palette — Tom Ford: black, platinum-champagne, pearl */
+    --onyx: #050506;
+    --pearl: #f4efe6;
+    --champagne: #c8a96a;
+    --champagne-soft: rgba(200, 169, 106, 0.28);
+    --smoke: #8f8a86;
+    --dev-red: #ff2f43;
+
+    /* Studio accents (mirrors the catalog) */
+    --c-comics: #ef4444;
+    --c-films: #3b82f6;
+    --c-music: #fbbf24;
+    --c-games: #10b981;
+    --c-journals: #b8763a;
+    --c-snacks: #ec4899;
+
+    --serif: 'Didot', 'Bodoni MT', 'Hoefler Text', 'Times New Roman', serif;
+    --sans: 'Futura', 'Century Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    --ease-silk: cubic-bezier(0.22, 0.61, 0.30, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--onyx);
+}
+
+body {
+    font-family: var(--sans);
+    color: var(--pearl);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.logo-font {
+    font-family: 'Azonix', var(--sans);
+    letter-spacing: 0.12em;
+}
+
+/* ============================================================
+   The Well — a vertical shaft the camera descends into
+   ============================================================ */
+.well {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.column {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: translateY(calc(var(--active, 0) * -100vh));
+    transition: transform 1.35s var(--ease-silk);
+    will-change: transform;
+}
+
+/* ---------- A Level (one question) ---------- */
+.level {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Weighted to the right so the whole composition clears the
+       elevator on the left while orb, prompt and valves stay aligned. */
+    padding: 7rem clamp(1.5rem, 3vw, 3rem) 5rem clamp(5.5rem, 9vw, 8rem);
+    overflow: hidden;
+    /* Each descent is darker; set per level via --depth. */
+    --tone: calc(15 - var(--depth, 0) * 5);
+    background:
+        radial-gradient(130% 90% at 50% 22%,
+            rgba(200, 169, 106, calc(0.06 - var(--depth, 0) * 0.018)) 0%,
+            transparent 45%),
+        radial-gradient(140% 100% at 50% 50%,
+            rgb(var(--tone) var(--tone) calc(var(--tone) + 3)) 0%,
+            #000 92%);
+    opacity: 1;
+    transition: opacity 1.1s var(--ease-silk), filter 1.1s var(--ease-silk);
+}
+
+/* Levels the camera has passed recede into darkness */
+.level.past {
+    opacity: 0.12;
+    filter: saturate(0.4) brightness(0.5);
+    pointer-events: none;
+}
+
+/* ---------- The Oracle's voice (the prompt) ---------- */
+.level-voice {
+    text-align: center;
+    max-width: min(94vw, 60rem);
+    margin-bottom: clamp(2.5rem, 7vh, 5rem);
+    opacity: 0;
+    transform: translateY(14px);
+    animation: rise 1s var(--ease-silk) 0.15s forwards;
+}
+
+.level-eyebrow {
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: var(--champagne);
+    opacity: 0.75;
+    margin-bottom: 1.4rem;
+    padding-left: 0.55em;
+}
+
+.level-prompt {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3.8vw, 2.9rem);
+    line-height: 1.12;
+    letter-spacing: 0.005em;
+    color: var(--pearl);
+    white-space: nowrap;
+}
+
+.level-prompt em {
+    font-style: italic;
+    color: var(--champagne);
+}
+
+.level-sub {
+    margin-top: 1.1rem;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+    color: var(--smoke);
+    letter-spacing: 0.01em;
+}
+
+/* ---------- The hovering crystal orb ---------- */
+.level-orb {
+    position: absolute;
+    left: 50%;
+    top: clamp(150px, 23vh, 235px);
+    width: clamp(84px, 12vw, 118px);
+    height: clamp(84px, 12vw, 118px);
+    margin-left: calc(clamp(84px, 12vw, 118px) / -2);
+    margin-top: calc(clamp(84px, 12vw, 118px) / -2);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 5;
+    --vc: var(--champagne);
+    background:
+        radial-gradient(circle at 34% 28%,
+            #ffffff 0%,
+            #f3ece0 10%,
+            #d7ccba 26%,
+            #8d8891 52%,
+            #34333b 82%,
+            #191920 100%);
+    box-shadow:
+        0 0 55px 6px color-mix(in srgb, var(--vc) 55%, transparent),
+        0 26px 50px -12px rgba(0, 0, 0, 0.85),
+        inset -9px -12px 26px rgba(0, 0, 0, 0.55),
+        inset 11px 13px 30px rgba(255, 255, 255, 0.4);
+    opacity: 0;
+    transition:
+        transform 0.82s cubic-bezier(0.5, 0, 0.2, 1),
+        opacity 0.6s ease,
+        box-shadow 0.6s ease;
+    animation: orbAppear 1.1s var(--ease-silk) 0.35s forwards;
+}
+
+.level-orb::before {
+    /* slow internal caustic swirl */
+    content: '';
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg,
+            transparent, rgba(200, 169, 106, 0.35), transparent 40%,
+            rgba(255, 255, 255, 0.25), transparent 70%);
+    filter: blur(6px);
+    mix-blend-mode: screen;
+    animation: swirl 9s linear infinite;
+    opacity: 0.7;
+}
+
+.level-orb::after {
+    /* crisp specular highlight */
+    content: '';
+    position: absolute;
+    top: 16%;
+    left: 24%;
+    width: 26%;
+    height: 20%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.95), transparent 70%);
+    filter: blur(1px);
+}
+
+/* The ball takes on the colour of the chosen medium */
+.level-orb.tinted {
+    background:
+        radial-gradient(circle at 34% 28%,
+            #ffffff 0%,
+            #fbf7ef 9%,
+            color-mix(in srgb, var(--vc) 32%, #ded3c2) 26%,
+            color-mix(in srgb, var(--vc) 68%, #7d7883) 54%,
+            color-mix(in srgb, var(--vc) 55%, #26252b) 82%,
+            #14131a 100%);
+}
+
+.level-orb.tinted::before {
+    background: conic-gradient(from 0deg,
+            transparent,
+            color-mix(in srgb, var(--vc) 70%, transparent), transparent 40%,
+            rgba(255, 255, 255, 0.28), transparent 70%);
+}
+
+.level-orb.floating {
+    animation: orbAppear 1.1s var(--ease-silk) 0.35s forwards, orbFloat 6s ease-in-out 1.4s infinite;
+}
+
+.level-orb.dropping {
+    transition:
+        transform 0.82s cubic-bezier(0.55, 0, 0.35, 1),
+        opacity 0.5s ease 0.55s;
+    animation: none;
+}
+
+/* ---------- The valves (choices) ---------- */
+.valves {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: clamp(1rem, 3vw, 3rem);
+    max-width: 60rem;
+    z-index: 3;
+}
+
+.valves.choosing .valve:not(.chosen) {
+    opacity: 0.18;
+    filter: blur(1px);
+    transform: scale(0.94);
+    pointer-events: none;
+}
+
+.valve {
+    appearance: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0;
+    color: inherit;
+    font-family: inherit;
+    --vc: var(--champagne);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: rise 0.9s var(--ease-silk) forwards;
+    transition: opacity 0.6s var(--ease-silk), filter 0.6s var(--ease-silk), transform 0.6s var(--ease-silk);
+}
+
+/* The socket — a valve carved into onyx */
+.socket {
+    position: relative;
+    width: clamp(60px, 8vw, 92px);
+    height: clamp(60px, 8vw, 92px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 38%, #1b1b20 0%, #08080a 68%);
+    border: 1px solid var(--champagne-soft);
+    box-shadow:
+        inset 0 7px 20px rgba(0, 0, 0, 0.85),
+        inset 0 -2px 5px rgba(255, 255, 255, 0.04),
+        0 3px 16px rgba(0, 0, 0, 0.6);
+    transition: box-shadow 0.5s var(--ease-silk), border-color 0.5s var(--ease-silk), transform 0.5s var(--ease-silk);
+}
+
+.socket::after {
+    /* faint rim gleam */
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.12), transparent 40%);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.valve:hover .socket,
+.valve:focus-visible .socket,
+.valve.focused .socket {
+    border-color: var(--vc);
+    transform: translateY(-4px);
+    box-shadow:
+        inset 0 7px 20px rgba(0, 0, 0, 0.85),
+        0 0 34px -4px var(--vc),
+        0 10px 26px rgba(0, 0, 0, 0.7);
+}
+
+.valve.filled .socket {
+    border-color: var(--vc);
+    box-shadow:
+        inset 0 0 42px rgba(255, 240, 210, 0.55),
+        0 0 60px -6px var(--vc);
+    background: radial-gradient(circle at 50% 42%, #fff7e9 0%, #d8c9a8 30%, #2a2820 85%);
+}
+
+.valve-label {
+    font-family: var(--sans);
+    font-size: clamp(0.72rem, 1.5vw, 0.9rem);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--pearl);
+    padding-left: 0.28em;
+    transition: color 0.4s var(--ease-silk), letter-spacing 0.4s var(--ease-silk);
+}
+
+.valve:hover .valve-label,
+.valve:focus-visible .valve-label,
+.valve.focused .valve-label {
+    color: var(--vc);
+    letter-spacing: 0.34em;
+}
+
+.valve-hint {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.82rem;
+    color: var(--smoke);
+    margin-top: -0.55rem;
+    max-width: 11rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.4s var(--ease-silk), transform 0.4s var(--ease-silk);
+}
+
+.valve:hover .valve-hint,
+.valve:focus-visible .valve-hint {
+    opacity: 0.9;
+    transform: translateY(0);
+}
+
+/* ---------- Dev-mode: unmade paths glow red ---------- */
+body.dev .valve.is-dev {
+    --vc: var(--dev-red);
+}
+
+body.dev .valve.is-dev .socket {
+    border-color: rgba(255, 47, 67, 0.5);
+    border-style: dashed;
+}
+
+body.dev .valve.is-dev .valve-label {
+    color: var(--dev-red);
+}
+
+body.dev .valve.is-dev .valve-label::after {
+    content: ' · dev';
+    opacity: 0.6;
+    font-size: 0.8em;
+}
+
+/* ---------- Numeric valves (How many players?) ---------- */
+/* Sized so all eight sit on one line when the width allows. */
+.valves.players {
+    gap: clamp(0.6rem, 2vw, 1.8rem);
+    max-width: min(96vw, 62rem);
+    flex-wrap: wrap;
+}
+
+.valve-num .socket {
+    width: clamp(54px, 7.4vw, 80px);
+    height: clamp(54px, 7.4vw, 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.valve-num .numeral {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3.6vw, 2.1rem);
+    color: var(--pearl);
+    opacity: 0.82;
+    transition: color 0.4s var(--ease-silk), opacity 0.4s var(--ease-silk);
+}
+
+.valve-num:hover .numeral,
+.valve-num:focus-visible .numeral,
+.valve-num.focused .numeral {
+    color: var(--vc);
+    opacity: 1;
+}
+
+.valve:hover .valve-hint,
+.valve.focused .valve-hint {
+    opacity: 0.9;
+    transform: translateY(0);
+}
+
+.valve-num.filled .numeral {
+    opacity: 0;
+}
+
+/* ---------- The Oracle's answer (suggested games) ---------- */
+.level-result {
+    justify-content: center;
+}
+
+.suggest {
+    width: min(100%, 46rem);
+    max-height: 76vh;
+    overflow-y: auto;
+    text-align: center;
+    padding: 0 0.5rem;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: rise 1s var(--ease-silk) 0.4s forwards;
+}
+
+.suggest .level-eyebrow {
+    color: var(--vc);
+    margin-bottom: 1rem;
+}
+
+.suggest-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: 0.01em;
+}
+
+.suggest-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--smoke);
+    font-size: clamp(0.95rem, 1.7vw, 1.15rem);
+    margin-top: 0.6rem;
+    margin-bottom: 2.4rem;
+}
+
+.game-list {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.game {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.4rem;
+    padding: 1.05rem 0.4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background 0.3s;
+}
+
+.game:last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.game:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.game-name {
+    font-family: var(--serif);
+    font-size: clamp(1.05rem, 2vw, 1.2rem);
+    color: var(--pearl);
+    line-height: 1.2;
+}
+
+.game-brand {
+    font-family: var(--sans);
+    font-size: 0.6rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--vc);
+    opacity: 0.85;
+    padding-left: 0.32em;
+}
+
+.game-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.3rem;
+    flex-shrink: 0;
+}
+
+.ext {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    font-family: var(--sans);
+    font-size: 0.64rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    padding-left: 0.24em;
+    transition: color 0.3s;
+}
+
+.ext:hover {
+    color: var(--pearl);
+}
+
+.ext-i {
+    font-size: 0.9em;
+    color: var(--champagne);
+    transform: translateY(-0.5px);
+    transition: transform 0.3s, color 0.3s;
+}
+
+.ext:hover .ext-i {
+    color: var(--vc);
+    transform: translate(1px, -1.5px);
+}
+
+.suggest::-webkit-scrollbar {
+    width: 5px;
+}
+
+.suggest::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 3px;
+}
+
+/* ---------- Leaf level (no question yet / coming soon) ---------- */
+.leaf {
+    text-align: center;
+    max-width: 34rem;
+    z-index: 3;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: rise 1s var(--ease-silk) 0.45s forwards;
+}
+
+.leaf-medallion {
+    width: clamp(96px, 13vw, 128px);
+    height: clamp(96px, 13vw, 128px);
+    margin: 0 auto 2.6rem;
+    border-radius: 50%;
+    border: 1px solid var(--champagne-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.7), 0 0 50px -10px var(--vc, var(--champagne));
+    background: radial-gradient(circle at 50% 40%, #17161a, #050506 72%);
+}
+
+.leaf-medallion .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--vc, var(--champagne));
+    box-shadow: 0 0 22px 3px var(--vc, var(--champagne));
+    animation: pulseDot 2.6s ease-in-out infinite;
+}
+
+.leaf-title {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+    letter-spacing: 0.02em;
+    margin-bottom: 1.1rem;
+}
+
+.leaf-body {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1rem, 1.9vw, 1.25rem);
+    color: var(--smoke);
+    line-height: 1.55;
+    margin-bottom: 2.2rem;
+}
+
+.leaf-tag {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 0.66rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--champagne);
+    padding: 0.7rem 1.4rem 0.7rem calc(1.4rem + 0.5em);
+    border: 1px solid var(--champagne-soft);
+    border-radius: 2rem;
+}
+
+.leaf.is-dev .leaf-tag {
+    color: var(--dev-red);
+    border-color: rgba(255, 47, 67, 0.4);
+}
+
+/* ============================================================
+   Ambient atmosphere
+   ============================================================ */
+.vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background: radial-gradient(120% 110% at 50% 42%, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+.dust {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.35), transparent),
+        radial-gradient(1px 1px at 70% 60%, rgba(200, 169, 106, 0.4), transparent),
+        radial-gradient(1px 1px at 40% 80%, rgba(255, 255, 255, 0.25), transparent),
+        radial-gradient(1px 1px at 85% 25%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 55% 15%, rgba(200, 169, 106, 0.3), transparent);
+    opacity: 0.5;
+    animation: drift 26s ease-in-out infinite alternate;
+}
+
+/* ============================================================
+   Chrome
+   ============================================================ */
+.oracle-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.6rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    pointer-events: none;
+}
+
+.oracle-header > * {
+    pointer-events: auto;
+}
+
+.back-btn {
+    position: absolute;
+    left: 2rem;
+    top: 1.5rem;
+    font-size: 0.78rem;
+    color: var(--smoke);
+    letter-spacing: 0.02em;
+    padding: 0.5rem 0.9rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    text-decoration: none;
+    transition: color 0.3s, background 0.3s;
+}
+
+.back-btn:hover {
+    color: var(--pearl);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Elevator (ride the floors) ---------- */
+.elevator {
+    position: fixed;
+    left: 1.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 0.6rem;
+    border-radius: 2.2rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.elev-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--champagne-soft);
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--champagne);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, transform 0.25s, border-color 0.3s, opacity 0.3s;
+}
+
+.elev-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.elev-btn:hover {
+    background: rgba(200, 169, 106, 0.16);
+    border-color: var(--champagne);
+    transform: translateY(-1px);
+}
+
+.elev-btn:active {
+    transform: translateY(1px);
+}
+
+.elev-btn.disabled {
+    opacity: 0.22;
+    pointer-events: none;
+}
+
+.elev-floors {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.15rem 0;
+}
+
+.elev-pip {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.22);
+    transition: all 0.4s var(--ease-silk);
+}
+
+.elev-pip.active {
+    background: var(--champagne);
+    box-shadow: 0 0 10px 1px var(--champagne);
+    transform: scale(1.3);
+}
+
+.brand {
+    position: absolute;
+    right: 2rem;
+    top: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    cursor: pointer;
+    opacity: 0.85;
+    transition: opacity 0.3s;
+}
+
+.brand:hover {
+    opacity: 1;
+}
+
+.brand-mark {
+    height: 22px;
+    width: auto;
+}
+
+.brand-word {
+    font-family: var(--sans);
+    font-size: 0.62rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    padding-left: 0.5em;
+}
+
+.dev-toggle {
+    position: fixed;
+    bottom: 1.3rem;
+    right: 1.5rem;
+    z-index: 50;
+    font-family: var(--sans);
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    padding: 0.4rem 0.7rem 0.4rem 0.9rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+body.dev .dev-toggle {
+    color: var(--dev-red);
+    border-color: rgba(255, 47, 67, 0.45);
+}
+
+/* ============================================================
+   Keyframes
+   ============================================================ */
+@keyframes rise {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes orbAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(-24px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes orbFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-12px) scale(1.012);
+    }
+}
+
+@keyframes swirl {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulseDot {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.35);
+        opacity: 0.65;
+    }
+}
+
+@keyframes drift {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-24px);
+    }
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 640px) {
+    .level {
+        padding: 6rem 1.2rem 4rem;
+    }
+
+    .valves {
+        gap: 1.6rem 2rem;
+        max-width: 24rem;
+    }
+
+    .valve-hint {
+        display: none;
+    }
+
+    .brand-word {
+        display: none;
+    }
+
+    .game {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.7rem;
+    }
+
+    .game-actions {
+        gap: 1.6rem;
+    }
+
+    .elevator {
+        left: 0.7rem;
+        gap: 0.6rem;
+        padding: 0.6rem 0.4rem;
+    }
+
+    .elev-btn {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .column {
+        transition-duration: 0.4s;
+    }
+    .level-orb,
+    .level-orb.floating,
+    .dust {
+        animation: none !important;
+    }
+}
