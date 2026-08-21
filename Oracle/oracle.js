@@ -223,6 +223,12 @@ const CASINO_CAMINO = {
     demo: 'camino',
 };
 
+// All fourteen Wonders share one arcade. Product and demo stay their
+// own — /pyramid, /pyramiddemo — so only the arcade is named here.
+const SEVEN_WONDERS = {
+    arcade: 'sevenwondersarcade',
+};
+
 // Believe Objects lives behind the Believe pages.
 const BELIEVE = {
     product: 'believe',
@@ -278,9 +284,12 @@ const GAMES = [
 
     // Screen-born solo games — no physical edition
     digitalOnly('Beat Race', 'beatrace', '',
-        { min: 1, max: 1, types: 'achiever', fate: 'none', minutes: 5 }),
+        { min: 1, max: 1, types: 'achiever', fate: 'none', minutes: 5,
+          links: { product: 'beatrace', arcade: 'beatracearcade', demo: 'beatrace' } }),
+    // Crosslink keeps everything on the one page.
     digitalOnly('Crosslink', 'crosslink', '',
-        { min: 1, max: 1, types: 'explorer achiever', fate: 'none', minutes: 5 }),
+        { min: 1, max: 1, types: 'explorer achiever', fate: 'none', minutes: 5,
+          links: { product: 'crosslink', arcade: 'crosslink', demo: 'crosslink' } }),
 
     // Elements — learned in two minutes. You race to shed cards rather
     // than to beat anyone, and it stays light enough to talk over.
@@ -306,7 +315,7 @@ function range(min, max) {
 // the 2/4 tables you can buy in a box (none by default).
 function sw(name, slug, physical = []) {
     return game(name, slug, 'Seven Wonders',
-        { counts: [2, 4], physical, types: 'achiever killer', fate: 'none', minutes: 30 });
+        { counts: [2, 4], physical, types: 'achiever killer', fate: 'none', minutes: 30, links: SEVEN_WONDERS });
 }
 
 function game(name, slug, brand, o) {
