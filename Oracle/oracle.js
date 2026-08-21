@@ -7,12 +7,13 @@
 
    Built so far:
      L0  medium → which studio (in catalog order)
+     L1  journals → Which topic? → the volumes on that shelf
      L1  games  → Digital or physical?
      L2         → How many players?
      L3+        → nature, fate, the hour — but only while the games
                   still standing disagree. The moment one is left,
                   the Oracle speaks.
-   Other studios are "coming soon" leaves.
+   Comics, Films, Music and Snacks are "coming soon" leaves.
 
    Navigation is an ELEVATOR: each answer is a floor. You ride
    up/down through the floors you've visited (buttons, ↑/↓ keys),
@@ -26,8 +27,9 @@
    order they should be asked.
    ============================================================ */
 
-// The studio's hue — Allmer Games green, worn by every floor below it.
+// Studio hues — worn by every floor below their branch.
 const GAMES_COLOR = '#10b981';
+const JOURNALS_COLOR = '#b8763a';
 
 const ORACLE = {
     start: 'medium',
@@ -79,7 +81,15 @@ const ORACLE = {
             sub: 'Every seat is a person — the Oracle will name the games for your table.',
             question: 'players',
         },
-        journals: studio('Journals', '#b8763a', 'The written record'),
+        journals: {
+            label: 'Journals',
+            color: JOURNALS_COLOR,
+            hint: 'The written record',
+            eyebrow: 'By Interest',
+            prompt: 'What draws your <em>interest</em>?',
+            sub: 'Choose the subject and the Oracle will hand you the volume.',
+            question: 'topic',
+        },
         snacks: studio('Snacks', '#ec4899', 'Taste as craft'),
     },
 };
@@ -229,6 +239,50 @@ function playerCounts(mode) {
 }
 
 // ============================================================
+//  The Journals — the catalog's J-numbers, in their own order.
+//  Topic is the only question they need; year rides along as
+//  part of the answer.
+// ============================================================
+const JOURNALS = [
+    journal('Simon Allmer World', 'world', 'Simon Allmer', 'Photography', 2020),
+    journal('Society Review', 'societyreview', 'Society Review', 'Current Affairs', 2021),
+    journal('Chronicle: Years of Change', 'chronicle', 'Chronicle', 'History', 2023),
+    journal('ACRONYM', 'acronym', 'Detective Noname', 'Conspiracy', 2025),
+    journal('Cosmographia', 'cosmographia', 'Cosmographia', 'Lexicon', 2026),
+    journal('American Chronicle', 'americanchronicle', 'Chronicle', 'History', 2026),
+];
+
+function journal(name, slug, brand, topic, year) {
+    return { name, slug, brand, topic, year };
+}
+
+function journalsOn(topic) {
+    return JOURNALS.filter(j => j.topic === topic);
+}
+
+// One valve per topic the shelf actually holds — in the order the
+// volumes were published, so the list reads as a history.
+function topicQuestion(node) {
+    const topics = [];
+    JOURNALS.forEach(j => { if (!topics.includes(j.topic)) topics.push(j.topic); });
+    return {
+        key: 'topic',
+        color: node.color,
+        eyebrow: node.eyebrow,
+        prompt: node.prompt,
+        sub: node.sub,
+        options: topics.map(t => {
+            const held = journalsOn(t);
+            return {
+                value: t,
+                label: t,
+                hint: held.length === 1 ? held[0].name : `${held.length} volumes`,
+            };
+        }),
+    };
+}
+
+// ============================================================
 //  The questions of appetite — asked after the table is set.
 //
 //  Order matters: the most telling question comes first, so a lone
@@ -367,6 +421,11 @@ class Oracle {
         let el, kind;
         if (node.choices) { el = this.buildChoiceLevel(node, idx); kind = 'choice'; }
         else if (node.question === 'players') { el = this.buildPlayersLevel(node, idx); kind = 'players'; }
+        else if (node.question === 'topic') {
+            el = this.buildQuestionLevel(topicQuestion(node), idx, option =>
+                this.makeJournalsFloor(option.value));
+            kind = 'choice';
+        }
         else { el = this.buildLeafLevel(node); kind = 'leaf'; }
         return { el, node, kind, chosenIndex: null, accent: node.color };
     }
@@ -376,18 +435,28 @@ class Oracle {
     makeGamesFloor(query) {
         const question = nextQuestion(query);
         return question
-            ? this.makeQuestionFloor(question, query)
+            ? this.makeQuestionFloor(question, option =>
+                this.makeGamesFloor({ ...query, [question.key]: option.value }))
             : this.makeResultFloor(query);
     }
 
-    makeQuestionFloor(question, query) {
-        const idx = this.floors.length;
+    makeQuestionFloor(question, next) {
         return {
-            el: this.buildQuestionLevel(question, query, idx),
+            el: this.buildQuestionLevel(question, this.floors.length, next),
             node: { color: question.color },
             kind: 'choice',
             chosenIndex: null,
             accent: question.color,
+        };
+    }
+
+    makeJournalsFloor(topic) {
+        return {
+            el: this.buildJournalsLevel(topic),
+            node: null,
+            kind: 'leaf',
+            chosenIndex: null,
+            accent: JOURNALS_COLOR,
         };
     }
 
@@ -473,7 +542,9 @@ class Oracle {
         return level;
     }
 
-    buildQuestionLevel(question, query, floorIndex) {
+    // `next(option)` builds whatever floor the answer leads to, so the
+    // same level serves the games branch and the journals branch alike.
+    buildQuestionLevel(question, floorIndex, next) {
         const level = document.createElement('section');
         level.className = 'level';
         level.innerHTML = `
@@ -499,8 +570,7 @@ class Oracle {
                 <div class="valve-hint">${option.hint}</div>
             `;
             valve.addEventListener('click', () =>
-                this.commit(floorIndex, valve, i, question.color, () =>
-                    this.makeGamesFloor({ ...query, [question.key]: option.value }))
+                this.commit(floorIndex, valve, i, question.color, () => next(option))
             );
             valves.appendChild(valve);
         });
@@ -553,6 +623,35 @@ class Oracle {
                 <h2 class="suggest-title">${label}</h2>
                 <p class="suggest-sub">${count} ${count === 1 ? 'game' : 'games'} ${where}.</p>
                 ${said ? `<p class="suggest-said">${said}</p>` : ''}
+                <div class="game-list">${rows}</div>
+            </div>
+        `;
+        return level;
+    }
+
+    buildJournalsLevel(topic) {
+        const level = document.createElement('section');
+        level.className = 'level level-result';
+        level.style.setProperty('--vc', JOURNALS_COLOR);
+
+        const held = journalsOn(topic);
+        const rows = held.map(j => `
+            <div class="game">
+                <div class="game-info">
+                    <span class="game-name">${j.name}</span>
+                    <span class="game-brand">${j.brand} · ${j.year}</span>
+                </div>
+                <div class="game-actions">
+                    ${extLink('Read', `https://simonallmer.com/${j.slug}`)}
+                </div>
+            </div>
+        `).join('');
+
+        level.innerHTML = `
+            <div class="suggest">
+                <div class="level-eyebrow">The Oracle Speaks</div>
+                <h2 class="suggest-title">${topic}</h2>
+                <p class="suggest-sub">${held.length} ${held.length === 1 ? 'volume' : 'volumes'} on the shelf.</p>
                 <div class="game-list">${rows}</div>
             </div>
         `;
