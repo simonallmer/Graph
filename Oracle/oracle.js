@@ -203,9 +203,18 @@ const ORACLE = {
 //  Digitally every game plays from 1 up to its largest table, since
 //  machines take the empty seats — see countsFor().
 //  Slugs build the three links: /slug, /slugarcade, /slugdemo.
+//  A title whose pages don't follow that pattern names its own in
+//  `links` — both Futory sets share one product page and one pair
+//  of Futory Cards doors.
 //  TBA titles (Trinity, Capital, Equilibrium, Silk Road) are omitted
 //  until made.
 // ============================================================
+const FUTORY_CARDS = {
+    product: 'futory',
+    arcade: 'futorycardsarcade',
+    demo: 'futorycardsdemo',
+};
+
 const GAMES = [
     // Seven Wonders — designed for 2 or 4 players, no chance at all.
     // Only Pyramid and Statue are in print so far; the rest are screen-only.
@@ -224,11 +233,13 @@ const GAMES = [
     sw('Palace', 'palace'),
     sw('Skyscraper', 'skyscraper'),
 
-    // Futory — 2-4 (2-6 when several titles are combined)
+    // Futory — 2-4 (2-6 when several titles are combined).
+    // Both sets live behind the one Futory page and the one pair of
+    // Futory Cards doors.
     game('Futory Cards Unity', 'futorycardsunity', 'Futory',
-        { min: 2, max: 4, types: 'achiever explorer', fate: 'some', minutes: 30 }),
+        { min: 2, max: 4, types: 'achiever explorer', fate: 'some', minutes: 30, links: FUTORY_CARDS }),
     game('Futory Cards Duality', 'futorycardsduality', 'Futory',
-        { min: 2, max: 4, types: 'achiever explorer', fate: 'some', minutes: 30 }),
+        { min: 2, max: 4, types: 'achiever explorer', fate: 'some', minutes: 30, links: FUTORY_CARDS }),
 
     // Casino Camino — the road, the gamble
     // Many games in one deck — some of them lean on chance harder than others.
@@ -291,12 +302,20 @@ function game(name, slug, brand, o) {
         types: o.types.split(' '),
         fate: o.fate.split(' '),
         minutes: o.minutes,
+        links: o.links || null,           // null = derive the three doors from the slug
     };
 }
 
 // A title that exists only on a screen — it never reaches the table.
 function digitalOnly(name, slug, brand, o) {
     return game(name, slug, brand, { ...o, physical: [] });
+}
+
+// The three doors. Most titles derive them from the slug; a title that
+// names its own in `links` wins.
+function linkFor(g, kind) {
+    const derived = { product: g.slug, arcade: g.slug + 'arcade', demo: g.slug + 'demo' };
+    return `https://simonallmer.com/${(g.links && g.links[kind]) || derived[kind]}`;
 }
 
 function inPrint(g) {
@@ -779,9 +798,9 @@ class Oracle {
                     ${g.brand ? `<span class="game-brand">${g.brand}</span>` : ''}
                 </div>
                 <div class="game-actions">
-                    ${inPrint(g) ? extLink('Product', `https://simonallmer.com/${g.slug}`) : ''}
-                    ${extLink('Arcade', `https://simonallmer.com/${g.slug}arcade`)}
-                    ${extLink('Demo', `https://simonallmer.com/${g.slug}demo`)}
+                    ${inPrint(g) ? extLink('Product', linkFor(g, 'product')) : ''}
+                    ${extLink('Arcade', linkFor(g, 'arcade'))}
+                    ${extLink('Demo', linkFor(g, 'demo'))}
                 </div>
             </div>
         `).join('');
