@@ -279,8 +279,10 @@ const GAMES = [
         { min: 2, max: 8, types: 'socializer achiever', fate: 'some', minutes: 15, links: BELIEVE }),
 
     // Detective Noname — solo, screen only. One chapter ≈ 30 minutes.
+    // The riddle itself is read at /noname; the brand page is its own.
     digitalOnly('Detective Noname and the Silent Circle', 'noname', 'Detective Noname',
-        { min: 1, max: 1, types: 'explorer', fate: 'none', minutes: 30 }),
+        { min: 1, max: 1, types: 'explorer', fate: 'none', minutes: 30,
+          links: { product: 'detectivenoname', arcade: 'detectivenonamearcade', demo: 'noname' } }),
 
     // Screen-born solo games — no physical edition
     digitalOnly('Beat Race', 'beatrace', '',
