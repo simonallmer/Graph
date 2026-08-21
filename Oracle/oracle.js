@@ -339,9 +339,44 @@ function digitalOnly(name, slug, brand, o) {
 
 // The three doors. Most titles derive them from the slug; a title that
 // names its own in `links` wins.
+//
+// A door is only worth showing if it goes somewhere new: Product appears
+// when the game is in print or names its own product page, and any door
+// repeating a page already offered on the row is dropped. So Detective
+// Noname shows all three (brand page, arcade, the riddle itself), while
+// Crosslink — which keeps everything on one page — shows one.
 function linkFor(g, kind) {
     const derived = { product: g.slug, arcade: g.slug + 'arcade', demo: g.slug + 'demo' };
     return `https://simonallmer.com/${(g.links && g.links[kind]) || derived[kind]}`;
+}
+
+// Product, Arcade, Demo — minus any door that leads where another
+// already goes, and minus Product when there is no product page of
+// its own to open.
+//
+// When one page answers to two names, the truer name keeps it: what
+// you can buy is a Product first, but a screen-only title is somewhere
+// you play, so its shared page shows as the Arcade.
+function doorsFor(g) {
+    const shown = ['product', 'arcade', 'demo'].filter(kind =>
+        kind !== 'product' || inPrint(g) || (g.links && g.links.product));
+
+    const priority = inPrint(g)
+        ? ['product', 'arcade', 'demo']
+        : ['arcade', 'demo', 'product'];
+
+    const owner = new Map();   // href -> the kind that gets to name it
+    priority.forEach(kind => {
+        if (!shown.includes(kind)) return;
+        const href = linkFor(g, kind);
+        if (!owner.has(href)) owner.set(href, kind);
+    });
+
+    const label = { product: 'Product', arcade: 'Arcade', demo: 'Demo' };
+    return shown
+        .filter(kind => owner.get(linkFor(g, kind)) === kind)
+        .map(kind => extLink(label[kind], linkFor(g, kind)))
+        .join('');
 }
 
 function inPrint(g) {
@@ -823,11 +858,7 @@ class Oracle {
                     <span class="game-name">${g.name}</span>
                     ${g.brand ? `<span class="game-brand">${g.brand}</span>` : ''}
                 </div>
-                <div class="game-actions">
-                    ${inPrint(g) ? extLink('Product', linkFor(g, 'product')) : ''}
-                    ${extLink('Arcade', linkFor(g, 'arcade'))}
-                    ${extLink('Demo', linkFor(g, 'demo'))}
-                </div>
+                <div class="game-actions">${doorsFor(g)}</div>
             </div>
         `).join('');
 
