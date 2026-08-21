@@ -163,7 +163,7 @@ const GAMES = [
     game('Believe', 'believe', 'Believe',
         { min: 2, max: 8, types: 'socializer', fate: 'some', minutes: 15 }),
     game('Believe Objects', 'believeobjects', 'Believe',
-        { min: 2, max: 8, types: 'socializer', fate: 'some', minutes: 15 }),
+        { min: 2, max: 8, types: 'socializer achiever', fate: 'some', minutes: 15 }),
 
     // Detective Noname — solo, screen only. One chapter ≈ 30 minutes.
     digitalOnly('Detective Noname and the Silent Circle', 'noname', 'Detective Noname',
@@ -240,45 +240,73 @@ function playerCounts(mode) {
 
 // ============================================================
 //  The Journals — the catalog's J-numbers, in their own order.
-//  Topic is the only question they need; year rides along as
-//  part of the answer.
+//  topic = the shelf it stands on. scope narrows a crowded shelf
+//  (two Chronicles, one of the world and one of America), so the
+//  Oracle can always come down to a single volume.
 // ============================================================
 const JOURNALS = [
     journal('Simon Allmer World', 'world', 'Simon Allmer', 'Photography', 2020),
     journal('Society Review', 'societyreview', 'Society Review', 'Current Affairs', 2021),
-    journal('Chronicle: Years of Change', 'chronicle', 'Chronicle', 'History', 2023),
+    journal('Chronicle: Years of Change', 'chronicle', 'Chronicle', 'History', 2023, 'World'),
     journal('ACRONYM', 'acronym', 'Detective Noname', 'Conspiracy', 2025),
     journal('Cosmographia', 'cosmographia', 'Cosmographia', 'Lexicon', 2026),
-    journal('American Chronicle', 'americanchronicle', 'Chronicle', 'History', 2026),
+    journal('American Chronicle', 'americanchronicle', 'Chronicle', 'History', 2026, 'American'),
 ];
 
-function journal(name, slug, brand, topic, year) {
-    return { name, slug, brand, topic, year };
+function journal(name, slug, brand, topic, year, scope = '') {
+    return { name, slug, brand, topic, year, scope };
 }
 
-function journalsOn(topic) {
-    return JOURNALS.filter(j => j.topic === topic);
+function journalsMatching(q) {
+    return JOURNALS.filter(j =>
+        (!q.topic || j.topic === q.topic) &&
+        (!q.scope || j.scope === q.scope)
+    );
 }
 
-// One valve per topic the shelf actually holds — in the order the
-// volumes were published, so the list reads as a history.
-function topicQuestion(node) {
-    const topics = [];
-    JOURNALS.forEach(j => { if (!topics.includes(j.topic)) topics.push(j.topic); });
+// In publication order, so the shelf reads as a history.
+function distinct(values) {
+    const out = [];
+    values.forEach(v => { if (v && !out.includes(v)) out.push(v); });
+    return out;
+}
+
+// The same rule the games branch follows: ask only while the volumes
+// still standing disagree, and stop the moment one is left.
+function nextJournalQuestion(q) {
+    const rest = journalsMatching(q);
+    if (rest.length <= 1) return null;
+
+    if (!q.topic) {
+        return {
+            key: 'topic',
+            eyebrow: 'By Interest',
+            prompt: 'What draws your <em>interest</em>?',
+            sub: 'Choose the subject and the Oracle will hand you the volume.',
+            options: distinct(rest.map(j => j.topic)).map(t => option(t, journalsMatching({ topic: t }))),
+        };
+    }
+
+    const scopes = distinct(rest.map(j => j.scope));
+    if (!q.scope && scopes.length > 1) {
+        return {
+            key: 'scope',
+            eyebrow: 'By Scope',
+            prompt: `Which <em>${q.topic.toLowerCase()}</em> do you seek?`,
+            sub: 'The shelf holds more than one. Narrow it.',
+            options: scopes.map(sc => option(sc, rest.filter(j => j.scope === sc))),
+        };
+    }
+    return null;
+}
+
+// A valve names what stands behind it: the volume itself when one
+// does, the count when several do.
+function option(value, held) {
     return {
-        key: 'topic',
-        color: node.color,
-        eyebrow: node.eyebrow,
-        prompt: node.prompt,
-        sub: node.sub,
-        options: topics.map(t => {
-            const held = journalsOn(t);
-            return {
-                value: t,
-                label: t,
-                hint: held.length === 1 ? held[0].name : `${held.length} volumes`,
-            };
-        }),
+        value,
+        label: value,
+        hint: held.length === 1 ? held[0].name : `${held.length} volumes`,
     };
 }
 
@@ -422,8 +450,9 @@ class Oracle {
         if (node.choices) { el = this.buildChoiceLevel(node, idx); kind = 'choice'; }
         else if (node.question === 'players') { el = this.buildPlayersLevel(node, idx); kind = 'players'; }
         else if (node.question === 'topic') {
-            el = this.buildQuestionLevel(topicQuestion(node), idx, option =>
-                this.makeJournalsFloor(option.value));
+            const question = nextJournalQuestion({});
+            el = this.buildQuestionLevel({ ...question, color: node.color }, idx, option =>
+                this.makeJournalsFloor({ [question.key]: option.value }));
             kind = 'choice';
         }
         else { el = this.buildLeafLevel(node); kind = 'leaf'; }
@@ -450,14 +479,21 @@ class Oracle {
         };
     }
 
-    makeJournalsFloor(topic) {
-        return {
-            el: this.buildJournalsLevel(topic),
-            node: null,
-            kind: 'leaf',
-            chosenIndex: null,
-            accent: JOURNALS_COLOR,
-        };
+    // Journals descend by the same rule as games: ask what still
+    // separates the volumes, and speak the moment one stands alone.
+    makeJournalsFloor(query) {
+        const question = nextJournalQuestion(query);
+        if (!question) {
+            return {
+                el: this.buildJournalsLevel(query),
+                node: null,
+                kind: 'leaf',
+                chosenIndex: null,
+                accent: JOURNALS_COLOR,
+            };
+        }
+        return this.makeQuestionFloor({ ...question, color: JOURNALS_COLOR }, option =>
+            this.makeJournalsFloor({ ...query, [question.key]: option.value }));
     }
 
     makeResultFloor(query) {
@@ -629,12 +665,13 @@ class Oracle {
         return level;
     }
 
-    buildJournalsLevel(topic) {
+    buildJournalsLevel(query) {
         const level = document.createElement('section');
         level.className = 'level level-result';
         level.style.setProperty('--vc', JOURNALS_COLOR);
 
-        const held = journalsOn(topic);
+        const held = journalsMatching(query);
+        const title = query.scope ? `${query.scope} ${query.topic}` : query.topic;
         const rows = held.map(j => `
             <div class="game">
                 <div class="game-info">
@@ -650,7 +687,7 @@ class Oracle {
         level.innerHTML = `
             <div class="suggest">
                 <div class="level-eyebrow">The Oracle Speaks</div>
-                <h2 class="suggest-title">${topic}</h2>
+                <h2 class="suggest-title">${title}</h2>
                 <p class="suggest-sub">${held.length} ${held.length === 1 ? 'volume' : 'volumes'} on the shelf.</p>
                 <div class="game-list">${rows}</div>
             </div>
