@@ -181,9 +181,9 @@ const GAMES = [
     game('Elements', 'elements', 'Elements',
         { min: 2, max: 6, types: 'socializer achiever', fate: 'some much', minutes: 15 }),
 
-    // Nectar (brand to be confirmed)
+    // Nectar (brand to be confirmed) — everything but an explorer's game
     game('Nectar', 'nectar', '',
-        { min: 2, max: 6, types: 'achiever socializer', fate: 'some', minutes: 15 }),
+        { min: 2, max: 6, types: 'achiever socializer killer', fate: 'some', minutes: 15 }),
 ];
 
 const MAX_PLAYERS = 8;
