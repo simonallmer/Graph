@@ -517,9 +517,30 @@ class Oracle {
         this.current = 0;
         this.locked = false;
         this.appendFloor(this.makeNodeFloor(ORACLE.nodes[ORACLE.start]));
-        this.setActive(0);
-        this.armFloor(0);
+
+        const entrance = deepLink();
+        if (entrance) this.openAt(entrance);
+        else { this.setActive(0); this.armFloor(0); }
         this.updateChrome();
+    }
+
+    // Show the medium floor as already answered and ride straight in.
+    // The floor above stays real, so ↑ still reaches the other studios.
+    openAt({ id, index }) {
+        const child = ORACLE.nodes[id];
+        const floor = this.floors[0];
+        const valve = floor.el.querySelectorAll('.valve')[index];
+
+        floor.chosenIndex = index;
+        floor.accent = child.color;
+        floor.el.querySelector('.valves').classList.add('choosing');
+        valve.classList.add('chosen', 'filled');
+        floor.el.querySelector('.level-orb').style.opacity = '0';
+
+        this.appendFloor(this.makeNodeFloor(child));
+        this.current = 1;
+        this.setActive(1);
+        this.armFloor(1);
     }
 
     setActive(index) {
@@ -974,6 +995,16 @@ class Oracle {
             case 'Escape': this.esc(); break;
         }
     }
+}
+
+// A deep link opens the Oracle inside one studio — /#games, or
+// /?start=games. Anything else is ignored and the descent starts
+// at the medium, as always.
+function deepLink() {
+    const asked = (new URLSearchParams(location.search).get('start')
+        || location.hash.replace('#', '')).trim().toLowerCase();
+    const index = ORACLE.nodes[ORACLE.start].choices.indexOf(asked);
+    return index === -1 ? null : { id: asked, index };
 }
 
 function extLink(label, href) {
