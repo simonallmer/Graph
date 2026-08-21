@@ -104,7 +104,9 @@ function studio(label, color, hint) {
 //             the title never appears on the physical floor and carries
 //             no Product link.
 //  types    = which of Bartle's four players the game serves.
-//  fate     = how much chance decides: none | some | much.
+//  fate     = how much chance decides: none | some | much. A title can
+//             hold two — American Playing Cards is many games in one
+//             deck, Elements can be played hard or played light.
 //  minutes  = the ceiling of its band: 5, 15 or 30. Nothing runs past
 //             thirty, so you can always switch it up or play again.
 //  Digitally every game plays from 1 up to its largest table, since
@@ -138,18 +140,20 @@ const GAMES = [
         { min: 2, max: 4, types: 'achiever explorer', fate: 'some', minutes: 30 }),
 
     // Casino Camino — the road, the gamble
+    // Many games in one deck — some of them lean on chance harder than others.
     game('American Playing Cards', 'americanplayingcards', 'Casino Camino',
-        { min: 2, max: 6, types: 'socializer killer', fate: 'much', minutes: 15 }),
+        { min: 2, max: 6, types: 'socializer killer', fate: 'some much', minutes: 15 }),
     game('Fortuna', 'fortuna', 'Casino Camino',
         { min: 2, max: 8, types: 'socializer achiever', fate: 'much', minutes: 15 }),
     game('Ricochet', 'ricochet', 'Casino Camino',
         { min: 2, max: 8, types: 'killer socializer', fate: 'much', minutes: 15 }),
 
-    // Believe — the story told on the spot; the draw is what makes it chance
+    // Believe — the story told on the spot. Purely social; the random
+    // draw is the only place chance enters.
     game('Believe', 'believe', 'Believe',
-        { min: 2, max: 8, types: 'socializer killer', fate: 'some', minutes: 15 }),
+        { min: 2, max: 8, types: 'socializer', fate: 'some', minutes: 15 }),
     game('Believe Objects', 'believeobjects', 'Believe',
-        { min: 2, max: 8, types: 'socializer killer', fate: 'some', minutes: 15 }),
+        { min: 2, max: 8, types: 'socializer', fate: 'some', minutes: 15 }),
 
     // Detective Noname — solo, screen only. One chapter ≈ 30 minutes.
     digitalOnly('Detective Noname and the Silent Circle', 'noname', 'Detective Noname',
@@ -161,9 +165,11 @@ const GAMES = [
     digitalOnly('Crosslink', 'crosslink', '',
         { min: 1, max: 1, types: 'explorer achiever', fate: 'none', minutes: 5 }),
 
-    // Elements — learned in two minutes
+    // Elements — learned in two minutes. You race to shed cards rather
+    // than to beat anyone, and it stays light enough to talk over.
+    // Playable strategically, though most won't — hence both fates.
     game('Elements', 'elements', 'Elements',
-        { min: 2, max: 6, types: 'killer achiever', fate: 'some', minutes: 15 }),
+        { min: 2, max: 6, types: 'socializer achiever', fate: 'some much', minutes: 15 }),
 
     // Nectar (brand to be confirmed)
     game('Nectar', 'nectar', '',
@@ -192,7 +198,7 @@ function game(name, slug, brand, o) {
         name, slug, brand, counts,
         physical: o.physical || counts,   // in print at every size, unless told otherwise
         types: o.types.split(' '),
-        fate: o.fate,
+        fate: o.fate.split(' '),
         minutes: o.minutes,
     };
 }
@@ -267,7 +273,7 @@ const QUESTIONS = [
         eyebrow: 'By Fate',
         prompt: 'How much <em>fate</em> shall you encounter?',
         sub: 'The Oracle asks how much it may decide on your behalf.',
-        test: (g, v) => g.fate === v,
+        test: (g, v) => g.fate.includes(v),
     },
     {
         key: 'span',
