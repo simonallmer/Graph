@@ -215,6 +215,21 @@ const FUTORY_CARDS = {
     demo: 'futorycardsdemo',
 };
 
+// Fortuna and Ricochet are played on the road itself — one Camino page
+// serves as both product and demo.
+const CASINO_CAMINO = {
+    product: 'camino',
+    arcade: 'casinocaminoarcade',
+    demo: 'camino',
+};
+
+// Believe Objects lives behind the Believe pages.
+const BELIEVE = {
+    product: 'believe',
+    arcade: 'believearcade',
+    demo: 'believedemo',
+};
+
 const GAMES = [
     // Seven Wonders — designed for 2 or 4 players, no chance at all.
     // Only Pyramid and Statue are in print so far; the rest are screen-only.
@@ -246,16 +261,16 @@ const GAMES = [
     game('American Playing Cards', 'americanplayingcards', 'Casino Camino',
         { min: 2, max: 6, types: 'socializer killer', fate: 'some much', minutes: 15 }),
     game('Fortuna', 'fortuna', 'Casino Camino',
-        { min: 2, max: 8, types: 'socializer achiever', fate: 'much', minutes: 15 }),
+        { min: 2, max: 8, types: 'socializer achiever', fate: 'much', minutes: 15, links: CASINO_CAMINO }),
     game('Ricochet', 'ricochet', 'Casino Camino',
-        { min: 2, max: 8, types: 'killer socializer', fate: 'much', minutes: 15 }),
+        { min: 2, max: 8, types: 'killer socializer', fate: 'much', minutes: 15, links: CASINO_CAMINO }),
 
     // Believe — the story told on the spot. Purely social; the random
     // draw is the only place chance enters.
     game('Believe', 'believe', 'Believe',
         { min: 2, max: 8, types: 'socializer', fate: 'some', minutes: 15 }),
     game('Believe Objects', 'believeobjects', 'Believe',
-        { min: 2, max: 8, types: 'socializer achiever', fate: 'some', minutes: 15 }),
+        { min: 2, max: 8, types: 'socializer achiever', fate: 'some', minutes: 15, links: BELIEVE }),
 
     // Detective Noname — solo, screen only. One chapter ≈ 30 minutes.
     digitalOnly('Detective Noname and the Silent Circle', 'noname', 'Detective Noname',
