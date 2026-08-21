@@ -209,6 +209,25 @@ const ORACLE = {
 //  TBA titles (Trinity, Capital, Equilibrium, Silk Road) are omitted
 //  until made.
 // ============================================================
+// ------------------------------------------------------------
+//  Shared pages — a temporary state, not the destination.
+//  Every product is meant to have a page of its own; until then
+//  some titles borrow a brand's. Where two doors on one row would
+//  open the same page, doorsFor() shows it once, so the collapse
+//  is visible as a missing button.
+//
+//  Still to be made, in Simon's order:
+//    · Casino Camino — Fortuna and Ricochet share /camino as both
+//      product and demo, so neither has a Demo door.
+//    · The recent digital releases — Crosslink keeps product,
+//      arcade and demo on /crosslink (one door left); Beat Race
+//      has no product page apart from /beatrace.
+//  Shared across titles rather than within a row, also unfinished:
+//    · Futory Cards Unity and Duality share /futory and both
+//      Futory Cards doors.
+//    · Believe Objects rides entirely on the Believe pages.
+//    · All fourteen Wonders share /sevenwondersarcade.
+// ------------------------------------------------------------
 const FUTORY_CARDS = {
     product: 'futory',
     arcade: 'futorycardsarcade',
