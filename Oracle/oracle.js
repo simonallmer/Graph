@@ -194,7 +194,10 @@ const ORACLE = {
 //             An empty set means there is no physical edition yet, so
 //             the title never appears on the physical floor and carries
 //             no Product link.
-//  types    = which of Bartle's four players the game serves.
+//  types    = which players the game serves. Bartle's four, plus the
+//             Solver — Bartle wrote for shared worlds, where the only
+//             things to act on are the world and other people, so the
+//             one who sits alone against a problem had no seat.
 //  fate     = how much chance decides: none | some | much. A title can
 //             hold two — American Playing Cards is many games in one
 //             deck, Elements can be played hard or played light.
@@ -300,15 +303,16 @@ const GAMES = [
     // Detective Noname — solo, screen only. One chapter ≈ 30 minutes.
     // The riddle itself is read at /noname; the brand page is its own.
     digitalOnly('Detective Noname and the Silent Circle', 'noname', 'Detective Noname',
-        { min: 1, max: 1, types: 'explorer', fate: 'none', minutes: 30,
+        { min: 1, max: 1, types: 'solver explorer', fate: 'none', minutes: 30,
           links: { product: 'detectivenoname', arcade: 'detectivenonamearcade', demo: 'noname' } }),
 
     // Screen-born solo games — no physical edition
     digitalOnly('Beat Race', 'beatrace', '',
         { min: 1, max: 1, types: 'achiever', fate: 'none', minutes: 5,
           links: { product: 'beatrace', arcade: 'beatracearcade', demo: 'beatrace' } }),
+    // No story to enter — only the problem.
     digitalOnly('CrossLink', 'crosslink', '',
-        { min: 1, max: 1, types: 'explorer achiever', fate: 'none', minutes: 5 }),
+        { min: 1, max: 1, types: 'solver', fate: 'none', minutes: 5 }),
 
     // Elements — learned in two minutes. You race to shed cards rather
     // than to beat anyone, and it stays light enough to talk over.
@@ -494,9 +498,12 @@ function option(value, held) {
 //  survivor is named at once instead of surviving three more floors.
 //  Bartle's four players discriminate hardest, then fate, then the hour.
 // ============================================================
+// What resists you names you: a person (Achiever, Killer), a world
+// (Explorer), or a problem (Solver).
 const ARCHETYPES = [
     { value: 'achiever', label: 'Achiever', hint: 'Points, status, the win recorded' },
-    { value: 'explorer', label: 'Explorer', hint: 'Discovery, hidden mechanics, deep lore' },
+    { value: 'explorer', label: 'Explorer', hint: 'A world to enter, and its deep lore' },
+    { value: 'solver', label: 'Solver', hint: 'Riddles, deduction, the answer earned' },
     { value: 'socializer', label: 'Socializer', hint: 'Talk, alliance, the table itself' },
     { value: 'killer', label: 'Killer', hint: 'Competition, dominance, the other beaten' },
 ];
@@ -522,7 +529,7 @@ const QUESTIONS = [
         color: GAMES_COLOR,
         eyebrow: 'By Nature',
         prompt: 'Which <em>player</em> are you?',
-        sub: 'Four natures gather at every table. Choose the one that is yours.',
+        sub: 'Choose the nature that is yours — the Oracle offers only those a game here can answer.',
         test: (g, v) => g.types.includes(v),
     },
     {
