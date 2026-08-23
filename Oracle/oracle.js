@@ -223,7 +223,7 @@ const ORACLE = {
 //    · Casino Camino — Fortuna and Ricochet share /camino as both
 //      product and demo, so neither has a Demo door.
 //    · Beat Race — no product page apart from /beatrace, so it
-//      shows no Product door. (CrossLink is done: it has its own
+//      shows no Product door. (Crosslink is done: it has its own
 //      three pages, and its override came down.)
 //  Shared across titles rather than within a row, also unfinished:
 //    · Futory Cards Unity and Duality share /futory and both
@@ -311,7 +311,7 @@ const GAMES = [
         { min: 1, max: 1, types: 'achiever', fate: 'none', minutes: 5,
           links: { product: 'beatrace', arcade: 'beatracearcade', demo: 'beatrace' } }),
     // No story to enter — only the problem.
-    digitalOnly('CrossLink', 'crosslink', '',
+    digitalOnly('Crosslink', 'crosslink', '',
         { min: 1, max: 1, types: 'solver', fate: 'none', minutes: 5 }),
 
     // Elements — learned in two minutes. You race to shed cards rather
