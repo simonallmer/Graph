@@ -592,7 +592,7 @@ class GraphVisualization {
                     { name: 'G023 Skyscraper', link: 'https://simonallmer.com/skyscraper' },
                     { name: 'G024 Futory Cards Duality', link: 'https://simonallmer.com/futory' },
                     { name: 'G025 Beat Race', link: 'https://simonallmer.com/beatrace' },
-                    { name: 'G026 Crosslink', link: 'https://simonallmer.com/crosslink' },
+                    { name: 'G026 CrossLink', link: 'https://simonallmer.com/crosslink' },
                     { name: 'G027 Capital [TBA]' },
                     { name: 'G028 Equilibrium [TBA]' },
                     { name: 'G029 Silk Road [TBA]' },

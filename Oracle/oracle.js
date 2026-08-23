@@ -219,9 +219,9 @@ const ORACLE = {
 //  Still to be made, in Simon's order:
 //    · Casino Camino — Fortuna and Ricochet share /camino as both
 //      product and demo, so neither has a Demo door.
-//    · The recent digital releases — Crosslink keeps product,
-//      arcade and demo on /crosslink (one door left); Beat Race
-//      has no product page apart from /beatrace.
+//    · Beat Race — no product page apart from /beatrace, so it
+//      shows no Product door. (CrossLink is done: it has its own
+//      three pages, and its override came down.)
 //  Shared across titles rather than within a row, also unfinished:
 //    · Futory Cards Unity and Duality share /futory and both
 //      Futory Cards doors.
@@ -307,10 +307,8 @@ const GAMES = [
     digitalOnly('Beat Race', 'beatrace', '',
         { min: 1, max: 1, types: 'achiever', fate: 'none', minutes: 5,
           links: { product: 'beatrace', arcade: 'beatracearcade', demo: 'beatrace' } }),
-    // Crosslink keeps everything on the one page.
-    digitalOnly('Crosslink', 'crosslink', '',
-        { min: 1, max: 1, types: 'explorer achiever', fate: 'none', minutes: 5,
-          links: { product: 'crosslink', arcade: 'crosslink', demo: 'crosslink' } }),
+    digitalOnly('CrossLink', 'crosslink', '',
+        { min: 1, max: 1, types: 'explorer achiever', fate: 'none', minutes: 5 }),
 
     // Elements — learned in two minutes. You race to shed cards rather
     // than to beat anyone, and it stays light enough to talk over.
@@ -359,42 +357,39 @@ function digitalOnly(name, slug, brand, o) {
 // The three doors. Most titles derive them from the slug; a title that
 // names its own in `links` wins.
 //
-// A door is only worth showing if it goes somewhere new: Product appears
-// when the game is in print or names its own product page, and any door
-// repeating a page already offered on the row is dropped. So Detective
-// Noname shows all three (brand page, arcade, the riddle itself), while
-// Crosslink — which keeps everything on one page — shows one.
+// A door is only worth showing if it goes somewhere new: every title
+// offers its product page, in print or not, and any door repeating a
+// page already offered on the row is dropped. So Detective Noname shows
+// all three (brand page, arcade, the riddle itself), while Beat Race —
+// whose product page is its demo — shows two.
 function linkFor(g, kind) {
     const derived = { product: g.slug, arcade: g.slug + 'arcade', demo: g.slug + 'demo' };
     return `https://simonallmer.com/${(g.links && g.links[kind]) || derived[kind]}`;
 }
 
 // Product, Arcade, Demo — minus any door that leads where another
-// already goes, and minus Product when there is no product page of
-// its own to open.
+// already goes.
 //
 // When one page answers to two names, the truer name keeps it: what
 // you can buy is a Product first, but a screen-only title is somewhere
 // you play, so its shared page shows as the Arcade.
-function doorsFor(g) {
-    const shown = ['product', 'arcade', 'demo'].filter(kind =>
-        kind !== 'product' || inPrint(g) || (g.links && g.links.product));
+const DOORS = ['product', 'arcade', 'demo'];
+const DOOR_LABEL = { product: 'Product', arcade: 'Arcade', demo: 'Demo' };
 
+function doorsFor(g) {
     const priority = inPrint(g)
         ? ['product', 'arcade', 'demo']
         : ['arcade', 'demo', 'product'];
 
     const owner = new Map();   // href -> the kind that gets to name it
     priority.forEach(kind => {
-        if (!shown.includes(kind)) return;
         const href = linkFor(g, kind);
         if (!owner.has(href)) owner.set(href, kind);
     });
 
-    const label = { product: 'Product', arcade: 'Arcade', demo: 'Demo' };
-    return shown
+    return DOORS
         .filter(kind => owner.get(linkFor(g, kind)) === kind)
-        .map(kind => extLink(label[kind], linkFor(g, kind)))
+        .map(kind => extLink(DOOR_LABEL[kind], linkFor(g, kind)))
         .join('');
 }
 
