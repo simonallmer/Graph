@@ -596,7 +596,8 @@ class GraphVisualization {
                     { name: 'G027 Capital [TBA]' },
                     { name: 'G028 Equilibrium [TBA]' },
                     { name: 'G029 Silk Road [TBA]' },
-                    { name: 'G030 Futory Cards Trinity [TBA]' }
+                    { name: 'G030 Futory Cards Trinity [TBA]' },
+                    { name: 'G031 Viral' }
                 ]
             },
             'Allmer Journals': {
